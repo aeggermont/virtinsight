@@ -14,7 +14,7 @@ Eventually the app will output the photo album with recorded text and speech to 
 
 ## Andoird libraries used:
 * Android speech
-* Android Locations using Google Play Services 
+* Android Locations using Google Play Services ( 7.5.0 )
 
 ## Use cases
 
