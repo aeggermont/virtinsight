@@ -12,6 +12,10 @@ This is an interactive virtual photo album recorder which creates virtual albums
 
 Eventually the app will output the photo album with recorded text and speech to a virtual reality experience using  wearable device lenses ir synching to a smart TV app with 3D virtual reality capabilities to view the presentation but these features are out side the scope for the class project. 
 
+## Andoird libraries used:
+* Android speech
+* Android Locations using Google Play Services 
+
 ## Use cases
 
 ## Mockups and wireframews for the app
