@@ -36,4 +36,4 @@ Before starting working on this project, I wanted to ensure that the key feature
 
 ## Mockups and wireframews for the app
 
-The app built will be compatible with tablet Google Nexus 7 (
+The app built will be compatible with tablet Google Nexus 7. I will publish some mockups and wireframes for the activy screen shortly.
