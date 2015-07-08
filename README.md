@@ -1,5 +1,9 @@
 # virtinsight
 
+## Main goal of the project.
+
+I am developing this project to get more skills in android development with a focus on services integration for interactive media apps. I am very interested in working with geolocation services, virtual and argumented interactive reality experiences, speech recogniztion and content providers to keep data persistance in the app.  I thought building a basic interactive photo album would be a good start point for me to explore these technologies in the middle term after the completion of this class. 
+
 ##Project Description
 
 This is an interactive virtual photo album recorder which creates virtual albums with different media inputs such as photos, speech and texts. The virtual album will eventually be viewed and browsed with virtaul reality wearable lenses to navigame throughout albums and media.  The scope of the project for this class has the following features:
@@ -31,3 +35,5 @@ Before starting working on this project, I wanted to ensure that the key feature
 * https://github.com/aeggermont/poc-geolocation-googleplay
 
 ## Mockups and wireframews for the app
+
+The app built will be compatible with tablet Google Nexus 7 (
