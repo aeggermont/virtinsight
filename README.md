@@ -34,6 +34,9 @@ Before starting working on this project, I wanted to ensure that the key feature
 * https://github.com/aeggermont/poc-androidspeech
 * https://github.com/aeggermont/poc-geolocation-googleplay
 
+## Useful links:
+* Maps visualization: https://developers.google.com/maps/tutorials/visualizing/earthquakes
+
 ## Mockups and wireframews for the app
 
 The app built will be compatible with tablet Google Nexus 7. I will publish some mockups and wireframes for the activy screen shortly.
