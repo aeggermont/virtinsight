@@ -33,6 +33,7 @@ Before starting working on this project, I wanted to ensure that the key feature
 
 * https://github.com/aeggermont/poc-androidspeech
 * https://github.com/aeggermont/poc-geolocation-googleplay
+* http://developer.android.com/training/camera/cameradirect.html ( Camera manipulation )
 
 ## Useful links:
 * Maps visualization: https://developers.google.com/maps/tutorials/visualizing/earthquakes
