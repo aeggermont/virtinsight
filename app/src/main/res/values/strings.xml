@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Virtual Album Tracker</string>
+    <string name="your_albums">Your Albums</string>
+    <string name="album_name">Album Name</string>
+    <string name="album_desc">Description</string>
+    <string name="date_added">Date Added</string>
+    <string name="add_more_albums">Add More Albums</string>
+    <string name="album_description">Album Description</string>
+    <string name="save">Save</string>
+    <string name="album_new">New Album</string>
+    <string name="show_all_albums">Show All Albums</string>
+
+    <string name="album_take_photo">Take Photo</string>
+    <string name="album_rec_speech">Record Speech</string>
+    <string name="album_add_event">Add Event</string>
+
+    <string name="enter_data_about_your_pet">Album name</string>
+    <string name="pet_species">Pet Species:</string>
+    <string name="show_all_pets">Show All Albums</string>
+    <string name="add_more_pets">Add More Pets</string>
+    <string name="pet_type">Pet Species</string>
+    <string name="pet_actions">Actions</string>
+    <string name="your_pets">Your Pets</string>
+    <string name="pet_name">Album Name:</string>
+    <string name="title_activity_new_album">newAlbum</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="title_activity_album_events">AlbumEvents</string>
+    <string name="speech_prompt">Say something&#8230;</string>
+    <string name="speech_not_supported">Sorry! Your device doesn\'t support speech input</string>
+    <string name="tap_on_mic">Tap on mic to speak</string>
+    <string name="title_activity_album_viewer">AlbumViewer</string>
+    <string name="title_activity_still_image">StillImage</string>
+
+
+    <!-- Settings for the camera activity -->
+    <string name="camera_record_press_appropriate_button">Camera Record, press appropriate button</string>
+    <!-- save_as_local_file -->
+    <string name="save_as_local_file">Save as local file</string>
+    <!-- set_as_wallpaper -->
+    <string name="set_as_wallpaper">Set as Wallpaper</string>
+    <!-- save_to_shared_library -->
+    <string name="save_to_shared_library">Save to shared library</string>
+    <!-- this_example_will_record_a_video_file_called_video_mp4_ -->
+    <string name="this_example_will_record_a_video_file_called_video_mp4_">This example will record a video file called video.mp4.</string>
+
+</resources>

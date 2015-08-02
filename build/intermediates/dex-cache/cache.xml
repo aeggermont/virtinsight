@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4e86306289ace4aa0cfec44a05ed2b410d36989d">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-bf3bfda492141f1eda42253606eda7f8101cbcc8.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-nearby/7.5.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="6440e5e5cfe368f9bff3c537fb8988048069cb33">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-6edc371f45a946a0bb29b9a111219593724a5ab8.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-games/7.5.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="02bac2dc792d78241077861566f2c82da955e7fa">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-0ffd4047490bbbc40bcded66a1634a2df4ac0bfe.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-analytics/7.5.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="e7b35244f50663b3f8d150714bca9ecd7a290da1">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-f5fc1b9cbb2b0fde87f7d0586a9b9b2ec54c8d16.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-fitness/7.5.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="a172852a35ff919e85b9b7f14bbc15c5bee25520">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-2d3c70bbb15407d49748498a5a8a85d22dfd51e3.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.0.0/libs/internal_impl-22.0.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="b5b92f469d515a13d778900f6d50c03d12f35504">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/internal_impl-22.0.0-d5e0344043e6002c1061695a83ea6fd864987fcf.jar" />
+    </item>
+    <item
+        jar="/Users/aae/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/22.0.0/support-annotations-22.0.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="685d0b2c590447e85284ed84712cb363ba04eff8">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/support-annotations-22.0.0-d005a3cc1ca78d22e8134eb932112a5ee1665372.jar" />
+    </item>
+    <item
+        jar="/Users/aae/advancedAndroid4e/Android Studio/Chapter 03 - Databases/PetTracker/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
+        <dex dex="/Users/aae/advancedAndroid4e/Android Studio/Chapter 03 - Databases/PetTracker/app/build/intermediates/pre-dexed/debug/classes-c4449febb7456ab1786b36e98e44e68e178b9fca.jar" />
+    </item>
+    <item
+        jar="/Users/aae/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/21.0.3/support-annotations-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4b74cefe1f0c1b819e7260c8627a14674e37fd35">
+        <dex dex="/Users/aae/advancedAndroid4e/Android Studio/Chapter 03 - Databases/PetTracker/app/build/intermediates/pre-dexed/debug/support-annotations-21.0.3-fba3c8adee7c6c301336ff4538c3ee212f068bf4.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-location/7.5.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="1e98ef3f124bb7a11f8575f9ff5dfea330b61b6f">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-1e37bf4c43f683310c104c546ef974925da2692b.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-panorama/7.5.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="ba207be21987c11b37d9f8faa08ed6e722569f30">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-78f4a2bf803bf1c6714eb777b7fc3140431bc5b7.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/7.5.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="a78183f30e769a98ab4820794f597763088d3065">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-f88ea204629c666f230f43858572f364d49847be.jar" />
+    </item>
+    <item
+        jar="/Users/aae/advancedAndroid4e/Android Studio/Chapter 03 - Databases/PetTracker/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/libs/internal_impl-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="01ec05bfbafcc07646ba813000bf2ef11742dd03">
+        <dex dex="/Users/aae/advancedAndroid4e/Android Studio/Chapter 03 - Databases/PetTracker/app/build/intermediates/pre-dexed/debug/internal_impl-21.0.3-b70a34ae1ca874f048694b407ae0748294d31294.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-appstate/7.5.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="68c140702c7242d914655bcb3164d9e8c45b84cb">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-acc08fe18a97386864d2f80658d733328d82dc97.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-drive/7.5.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="f44d03c138cb6488fdbaa65e3a7e5878861a56d8">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-4bd2f33553c40a75f552e1b1e92575d053a71b8e.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-maps/7.5.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="06a42becc33232ec0ee125161da68c1829c9f8fd">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-e7ede684a28484c249b7f379c3e11ea78f7df81c.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-appindexing/7.5.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="f02127a85abd52a2cd526d4c2409f21969f80ee8">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-e6e9f396f3aa6168f1fb054dcfdbe287ed4fef23.jar" />
+    </item>
+    <item
+        jar="/Users/aae/advancedAndroid4e/Android Studio/Chapter 03 - Databases/PetTracker/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
+        <dex dex="/Users/aae/advancedAndroid4e/Android Studio/Chapter 03 - Databases/PetTracker/app/build/intermediates/pre-dexed/debug/classes-02f795514dca28107eb74dce77a05dd87977e9ad.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-cast/7.5.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="8e3a972f28b8bae817e382257ba177a31bcadbbc">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-4cd96f82ffb78167f6598e36aee7129549f71ac7.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.android.support/mediarouter-v7/22.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="a1372c17fccacca753d3951d3ad820571cbce075">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-fe8ec5f35163d9e8018a492bbac8411113db75c4.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-wearable/7.5.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="69dd177337ead693c408c8dddc9546bb6f1244fa">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-b32d920dab57a087f8a958d8329f95294e43264c.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-gcm/7.5.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="8d736fefa22d896e84a268354b3ed48a42663150">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-4a947f7c63db29c9bbfce4161e53758182a5836e.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-ads/7.5.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="29ebc7e04d877062317c8cc0e68b20f0c1fcda66">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-68605e041def75db1bf6bfeeb5f1b99bdc2f801b.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-plus/7.5.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="272bc5d7063f24bc3a33ea1d318cde8f31f5ec4c">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-99a4474c8e985a94aff54d163171f185dc7b4a59.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-safetynet/7.5.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="1a6411087ab88ce5542f593e63a2752b6b0d6f1a">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-aeb3ba28b50532331d2882e4d3fbdc9ebdd5741e.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-wallet/7.5.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="6836d188602ec5382d1967c58b00960eb8ff8773">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-b4352b9da56374f6c3fc07baf5fe0858450dc0d4.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-appinvite/7.5.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="63ec6e9f4fe5482a7447d0f3091b8e543a02554c">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-9aa24915835905cdf36acd7e624ceec727441bf3.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-identity/7.5.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="d405025c600055237c171a0bbabaa49d69696573">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-7d5fc8b1bedb1fdd7f2812419c893d23af6f9a6c.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.android.support/mediarouter-v7/22.0.0/libs/internal_impl-22.0.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="ba3df4eb0a630d7de294f0e48d3f9267d279b784">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/internal_impl-22.0.0-4bd6ab1fd97b316bf0360fce1e766a2760c9406f.jar" />
+    </item>
+    <item
+        jar="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="d84409890828e07d344a3b9b1da545dba9897b51">
+        <dex dex="/Users/aae/AndroidStudioProjects/virtinsight/app/build/intermediates/pre-dexed/debug/classes-ece31eb5cd6ae8eedec0a94a996e5a7e89c7d6e4.jar" />
+    </item>
+
+</items>

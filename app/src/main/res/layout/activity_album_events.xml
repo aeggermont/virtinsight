@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/album_new"
+        android:textColor="#0f0"
+        android:textSize="11pt"
+        android:id="@+id/TextAlbumName" />
+
+
+    <TableLayout
+        android:id="@+id/TableLayout02"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:stretchColumns="1" >
+
+
+   <TableRow
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content" >
+
+       <EditText
+           android:id="@+id/txtSpeechInput"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_alignParentTop="true"
+           android:layout_centerHorizontal="true"
+           android:layout_marginTop="100dp"
+           android:textColor="@color/white"
+           android:textSize="26dp"
+           android:textStyle="normal" />
+
+   </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/ButtonTakePhoto"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/album_take_photo"
+            android:layout_below="@+id/TableLayout02"
+            android:layout_alignParentStart="true">
+        </Button>
+
+    </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/ButtonRecordSpeech"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/album_rec_speech"
+                android:layout_below="@+id/TableLayout02"
+                android:layout_alignParentStart="true">
+            </Button>
+
+         </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/ButtonSaveAlbumEvent"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/album_add_event"
+                android:layout_below="@+id/TableLayout02"
+                android:layout_alignParentStart="true">
+            </Button>
+
+        </TableRow>
+
+    </TableLayout>
+
+
+
+</LinearLayout>
+

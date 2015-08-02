@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/ButtonNew"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/album_new"
+        android:onClick="newAlbum">
+    </Button>
+
+    <Button
+        android:id="@+id/ButtonShowPets"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/show_all_albums" >
+    </Button>
+</LinearLayout>
