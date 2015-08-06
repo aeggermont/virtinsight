@@ -10,10 +10,13 @@ package com.eggermont.virtinsight;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -25,12 +28,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 
@@ -38,15 +43,17 @@ public class AlbumEvent extends Activity {
 
     private static final String DEBUG_TAG = AlbumEvent.class.getCanonicalName();
 
+
+    // Call back ids
     private static final int ACTION_TAKE_PHOTO_B = 1;
     private static final int ACTION_TAKE_PHOTO_S = 2;
     private static final int ACTION_TAKE_VIDEO = 3;
+    private static final int ACTION_RECORD_SPEECH = 100;
 
+
+    // Configuration settings
     private static final String BITMAP_STORAGE_KEY = "viewAlbumBitmap";
     private static final String IMAGEVIEW_VISIBILITY_STORAGE_KEY = "imagealbumviewvisibility";
-    private ImageView mImageView1;
-    private TextView mEditText;
-    private Bitmap mImageBitmap;
 
     private static final String VIDEO_STORAGE_KEY = "viewvideo";
     private static final String VIDEOVIEW_VISIBILITY_STORAGE_KEY = "videoviewvisibility";
@@ -61,12 +68,19 @@ public class AlbumEvent extends Activity {
 
     private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
 
+    // UI Widgets
+    private ImageView mImageView1;
+    private TextView mEditText;
+    private Bitmap mImageBitmap;
+    private Button mRecordSpeech;
+    private Button mSaveAlbumEvent;
+    private TextView mTxtSpeechInput;
+
     /* Photo album for this application */
     private String getAlbumName() {
 
         return getString(R.string.album_name);
     }
-
 
     /**
      * This method creates a directory in the appropriate directory location
@@ -265,6 +279,8 @@ public class AlbumEvent extends Activity {
 
     // Setting up button listeners
 
+
+
     Button.OnClickListener mTakePicOnClickListener =
             new Button.OnClickListener() {
                 @Override
@@ -289,6 +305,33 @@ public class AlbumEvent extends Activity {
                 }
             };
 
+
+    public void rec_speech() {
+        Log.i(DEBUG_TAG, "Recording speech ...  ");
+        //Log.i(DEBUG_TAG, "Album ID: " + this.albumId);
+        promptSpeechInput();
+    }
+
+    /**
+     * Showing google speech input dialog
+     * TODO: Need to check if the intent is available first
+     */
+    private void promptSpeechInput() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
+                getString(R.string.speech_prompt));
+        try {
+            startActivityForResult(intent, ACTION_RECORD_SPEECH);
+        } catch (ActivityNotFoundException a) {
+            Toast.makeText(getApplicationContext(),
+                    getString(R.string.speech_not_supported),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -300,9 +343,22 @@ public class AlbumEvent extends Activity {
         mImageBitmap = null;
         //mVideoUri = null;
 
-        // Set speech input text widdget to invisible
-        mEditText = (EditText) findViewById(R.id.txtSpeechInput);
-        mEditText.setVisibility(EditText.INVISIBLE);
+        // Handle speech button and widget events
+        mTxtSpeechInput = (EditText) findViewById(R.id.txtSpeechInput);
+        mTxtSpeechInput.setVisibility(EditText.INVISIBLE);
+
+        // Handling speech recording
+        mRecordSpeech = (Button) findViewById(R.id.ButtonRecordSpeech);
+        //inal Button addEvent = (Button) findViewById(R.id.ButtonSaveAlbumEvent);
+
+        mRecordSpeech.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                rec_speech();
+            }
+        });
+
 
         Button picBtn = (Button) findViewById(R.id.btnIntend);
         setBtnListenerOrDisable(
@@ -342,8 +398,20 @@ public class AlbumEvent extends Activity {
                 }
                 break;
             } // ACTION_TAKE_VIDEO
+            case ACTION_RECORD_SPEECH:{
+                if (resultCode == RESULT_OK && null != data ){
+                    ArrayList<String> result = data
+                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    mTxtSpeechInput.setText(result.get(0));
+                    mTxtSpeechInput.setVisibility(EditText.VISIBLE);
+                }
+                break;
+            }// ACTION_RECORD_SPEECH
         } // switch
     }
+
+
+
 
     // Some lifecycle callbacks so that the image can survive orientation change
     @Override
