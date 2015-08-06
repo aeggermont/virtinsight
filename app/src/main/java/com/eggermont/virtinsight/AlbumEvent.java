@@ -39,7 +39,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 
-public class AlbumEvent extends Activity {
+public class AlbumEvent extends AlbumTrackerActivity {
 
     private static final String DEBUG_TAG = AlbumEvent.class.getCanonicalName();
 
@@ -75,6 +75,7 @@ public class AlbumEvent extends Activity {
     private Button mRecordSpeech;
     private Button mSaveAlbumEvent;
     private TextView mTxtSpeechInput;
+    private TextView mTextViewAlbumName;
 
     /* Photo album for this application */
     private String getAlbumName() {
@@ -265,7 +266,7 @@ public class AlbumEvent extends Activity {
     }
 
     /**
-     *
+     * Disabling camera reocrdings for now
      * @param intent
      */
     private void handleCameraVideo(Intent intent) {
@@ -275,9 +276,6 @@ public class AlbumEvent extends Activity {
         //mVideoView.setVisibility(View.VISIBLE);
         mImageView1.setVisibility(View.INVISIBLE);
     }
-
-
-    // Setting up button listeners
 
 
 
@@ -339,25 +337,39 @@ public class AlbumEvent extends Activity {
         setContentView(R.layout.activity_album_events);
 
         mImageView1 = (ImageView) findViewById(R.id.imageView1);
-        //mVideoView = (VideoView) findViewById(R.id.videoView1);
-        mImageBitmap = null;
-        //mVideoUri = null;
+        mTextViewAlbumName = (TextView) findViewById(R.id.TextAlbumName);
 
-        // Handle speech button and widget events
+        // Getting album info from previous activity
+        // Intent albumInt = getIntent();
+        // String albumName = albumInt.getExtras().getString("albumName");
+        // String albumDesc = albumInt.getExtras().getString("albumDesc");
+
+        // Log.i(DEBUG_TAG, "Album name: " + albumName);
+        // Log.i(DEBUG_TAG, "Album description: " + albumDesc);
+
+        /**
+         * Handling speech recording
+         */
         mTxtSpeechInput = (EditText) findViewById(R.id.txtSpeechInput);
         mTxtSpeechInput.setVisibility(EditText.INVISIBLE);
 
-        // Handling speech recording
+
         mRecordSpeech = (Button) findViewById(R.id.ButtonRecordSpeech);
         //inal Button addEvent = (Button) findViewById(R.id.ButtonSaveAlbumEvent);
 
         mRecordSpeech.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
                 rec_speech();
             }
         });
+
+        /**
+         * Handling photo recordings
+         */
+        //mVideoView = (VideoView) findViewById(R.id.videoView1);
+        mImageBitmap = null;
+        //mVideoUri = null;
 
 
         Button picBtn = (Button) findViewById(R.id.btnIntend);
@@ -418,8 +430,8 @@ public class AlbumEvent extends Activity {
     protected void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(BITMAP_STORAGE_KEY, mImageBitmap);
         outState.putParcelable(VIDEO_STORAGE_KEY, mVideoUri);
-        outState.putBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY, (mImageBitmap != null) );
-        outState.putBoolean(VIDEOVIEW_VISIBILITY_STORAGE_KEY, (mVideoUri != null) );
+        outState.putBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY, (mImageBitmap != null));
+        outState.putBoolean(VIDEOVIEW_VISIBILITY_STORAGE_KEY, (mVideoUri != null));
         super.onSaveInstanceState(outState);
     }
 
