@@ -51,7 +51,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
     private static final int ACTION_TAKE_PHOTO_B = 1;
     private static final int ACTION_TAKE_PHOTO_S = 2;
     private static final int ACTION_TAKE_VIDEO = 3;
-    private static final int ACTION_RECORD_SPEECH = 100;
+    private static final int ACTION_CAPTURE_TEXT = 4;
 
 
     // Configuration settings
@@ -78,7 +78,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
     private Button mRecordSpeech;
     private Button mSaveAlbumEvent;
 
-    private EditText mTxtSpeechInput;
+    private TextView mTxtSpeechInput;
     private TextView mTextViewAlbumName;
     private TextView mTextAlbumName;
 
@@ -257,7 +257,8 @@ public class AlbumEvent extends AlbumTrackerActivity {
     }
 
     /**
-     *
+     * Sends a broacast to publish recorded photo to
+     * the photo gallery manager
      */
     private void galleryAddPic() {
         Intent mediaScanIntent = new Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE");
@@ -294,8 +295,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
                 break;
         }
 
-        Log.i(DEBUG_TAG, ">> Path for media file: " +  mCurrentPhotoPath.toString());
-
+        Log.i(DEBUG_TAG, ">> Path for media file: " + mCurrentPhotoPath.toString());
         startActivityForResult(takePictureIntent, actionCode);
     }
 
@@ -333,6 +333,16 @@ public class AlbumEvent extends AlbumTrackerActivity {
     }
 
     /**
+     * Get the captured text from SpeechText activity and
+     * update the activity UI.
+     * @param data
+     */
+    private void handleCapturedText(Intent data){
+        Log.i(DEBUG_TAG, "About to handleCapturedText()");
+        mTxtSpeechInput.setText(data.getStringExtra("eventDescription"));
+    }
+
+    /**
      * Disabling camera reocrdings for now
      * @param intent
      */
@@ -345,31 +355,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
     }
 
 
-    public void rec_speech() {
-        Log.i(DEBUG_TAG, "Recording speech ...  ");
-        Log.i(DEBUG_TAG, "Album ID: " + this.albumId);
-        promptSpeechInput();
-    }
-
-    /**
-     * Showing google speech input dialog
-     * TODO: Need to check if the intent is available first
-     */
-    private void promptSpeechInput() {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
-                getString(R.string.speech_prompt));
-        try {
-            startActivityForResult(intent, ACTION_RECORD_SPEECH);
-        } catch (ActivityNotFoundException a) {
-            Toast.makeText(getApplicationContext(),
-                    getString(R.string.speech_not_supported),
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
 
     /** Called when the activity is first created. */
     @Override
@@ -382,20 +367,14 @@ public class AlbumEvent extends AlbumTrackerActivity {
         setAlbumInfo();
         Log.i(DEBUG_TAG, "Album ID: " + getAlbumId());
 
-        /**
-         * Handling speech recording
-         */
-        mTxtSpeechInput = (EditText) findViewById(R.id.txtSpeechInput);
-        mTxtSpeechInput.setVisibility(EditText.INVISIBLE);
-
-
+        mTxtSpeechInput = (TextView) findViewById(R.id.txtSpeechInput);
         mRecordSpeech   = (Button) findViewById(R.id.ButtonRecordSpeech);
         mSaveAlbumEvent = (Button) findViewById(R.id.ButtonSaveAlbumEvent);
 
         mRecordSpeech.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                rec_speech();
+                dispatchSpeechTextIntent();
             }
         });
 
@@ -432,12 +411,22 @@ public class AlbumEvent extends AlbumTrackerActivity {
         }
     }
 
+    /**
+     *  This method launches the SpeechTest activity to add edit
+     *  text descriptions to the album
+     */
+    public void dispatchSpeechTextIntent(){
+        Intent intent = new Intent(AlbumEvent.this, SpeechText.class);
+        intent.putExtra("albumName", getAlbumName());
+        intent.putExtra("albumDesc", getAlbumDescription());
+        startActivityForResult(intent, ACTION_CAPTURE_TEXT);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case ACTION_TAKE_PHOTO_B: {
                 if (resultCode == RESULT_OK) {
-                    Log.i(DEBUG_TAG, "About to handle photo");
                     handleBigCameraPhoto();
                 }
                 break;
@@ -456,15 +445,13 @@ public class AlbumEvent extends AlbumTrackerActivity {
                 }
                 break;
             } // ACTION_TAKE_VIDEO
-            case ACTION_RECORD_SPEECH:{
-                if (resultCode == RESULT_OK && null != data ){
-                    ArrayList<String> result = data
-                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    mTxtSpeechInput.setText(result.get(0));
-                    mTxtSpeechInput.setVisibility(EditText.VISIBLE);
+            case ACTION_CAPTURE_TEXT: {
+                if ( resultCode == RESULT_OK ){
+                    Log.i(DEBUG_TAG, "About to handle text");
+                    handleCapturedText(data);
                 }
                 break;
-            }// ACTION_RECORD_SPEECH
+            } // ACTION_CAPTURE_TEXT
         } // switch
     }
 
