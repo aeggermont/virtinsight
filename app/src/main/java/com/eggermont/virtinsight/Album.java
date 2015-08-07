@@ -1,10 +1,11 @@
 package com.eggermont.virtinsight;
 
+/**
+ *  This is the entry class to create and view
+ *  albums.
+ */
 
 import android.content.Intent;
-import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -12,7 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import java.sql.Date;
+
 
 public class Album extends AlbumTrackerActivity {
 
@@ -25,49 +26,12 @@ public class Album extends AlbumTrackerActivity {
         Log.i(DEBUG_TAG, "Starting Album Activity  ...  ");
         setContentView(R.layout.activity_album);
 
-        /**
-        // Handle Save New Album Button
-        final Button savePet = (Button) findViewById(R.id.ButtonNew);
-        savePet.setOnClickListener(new View.OnClickListener() {
+        final Button newAlbum = (Button) findViewById(R.id.ButtonStartAlbum);
+        newAlbum.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                final EditText albumName = (EditText) findViewById(R.id.EditTextName);
-                final EditText albumDesc = (EditText) findViewById(R.id.EditAlbumDescription);
-
-                // Save new records
-
-                SQLiteDatabase db = mDatabase.getWritableDatabase();
-                db.beginTransaction();
-                try {
-
-                    Date today = new Date(System.currentTimeMillis());
-
-                    // Start Query
-                    SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-                    queryBuilder.setTables(AlbumTrackerDatabase.VirtAlbums.ALBUMS_TABLE_NAME);
-
-                    ContentValues albumRecordToAdd = new ContentValues();
-                    albumRecordToAdd.put(AlbumTrackerDatabase.VirtAlbums.ALBUM_TITLE_NAME, albumName.getText().toString());
-                    albumRecordToAdd.put(AlbumTrackerDatabase.VirtAlbums.ALBUM_DESCRIPTION, albumDesc.getText().toString());
-                    albumRecordToAdd.put(AlbumTrackerDatabase.VirtAlbums.ALBUM_DATE_ADDED, today.toString());
-
-                    db.insert(AlbumTrackerDatabase.VirtAlbums.ALBUMS_TABLE_NAME, AlbumTrackerDatabase.VirtAlbums.ALBUM_TITLE_NAME,
-                            albumRecordToAdd);
-
-                    db.setTransactionSuccessful();
-                } finally {
-                    db.endTransaction();
-                }
-
-                // reset form
-                albumName.setText(null);
-                //petType.setText(null);
-                db.close();
-
+                startNewAlbum();
             }
         });
-         */
-
     }
 
     @Override
@@ -92,17 +56,21 @@ public class Album extends AlbumTrackerActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void startNewAlbum(View view){
+    /**
+     * Creates a new album by starting the activity AlbumEvents to
+     * beging recording media events.
+     */
+    public void startNewAlbum(){
         Log.i(DEBUG_TAG, "Trting to start AlbumEvents Activity ...  ");
 
-        final EditText albumName = (EditText) findViewById(R.id.EditTextName);
+        final EditText albumName = (EditText) findViewById(R.id.EditTextAlbumName);
         final EditText albumDesc = (EditText) findViewById(R.id.EditAlbumDescription);
 
         Log.i(DEBUG_TAG, "Starting AlbumEvents Activity ...  ");
-        Intent intent = new Intent(Album.this, AlbumEvents.class);
+        Intent intent = new Intent(Album.this, AlbumEvent.class);
         intent.putExtra("albumName", albumName.getText().toString());
         intent.putExtra("albumDesc", albumDesc.getText().toString());
-
         startActivity(intent);
+
     }
 }
