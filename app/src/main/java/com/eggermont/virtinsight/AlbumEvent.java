@@ -17,10 +17,13 @@ import java.util.Locale;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -74,14 +77,80 @@ public class AlbumEvent extends AlbumTrackerActivity {
     private Bitmap mImageBitmap;
     private Button mRecordSpeech;
     private Button mSaveAlbumEvent;
-    private TextView mTxtSpeechInput;
+
+    private EditText mTxtSpeechInput;
     private TextView mTextViewAlbumName;
+    private TextView mTextAlbumName;
+
+    // Album settings
+    private long albumId;
+    private String albumName;
+    private String albumDesc;
+
+
+    Button.OnClickListener mTakePicOnClickListener =
+            new Button.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dispatchTakePictureIntent(ACTION_TAKE_PHOTO_B);
+                }
+            };
+
+    Button.OnClickListener mTakePicSOnClickListener =
+            new Button.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dispatchTakePictureIntent(ACTION_TAKE_PHOTO_S);
+                }
+            };
+
+    Button.OnClickListener mTakeVidOnClickListener =
+            new Button.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dispatchTakeVideoIntent();
+                }
+            };
+
+    private String getCurrentPhotoPath(){
+        return mCurrentPhotoPath;
+    }
+
+    private long getAlbumId(){
+        return albumId;
+    }
 
     /* Photo album for this application */
     private String getAlbumName() {
-
-        return getString(R.string.album_name);
+        return this.albumName;
     }
+
+    private String getAlbumDescription(){
+        return this.albumDesc;
+    }
+
+    private void setAlbumInfo(){
+
+        // Getting album info from previous activity
+        //Intent albumInt = getIntent();
+        //String albumName = albumInt.getExtras().getString("albumName");
+        //String albumDesc = albumInt.getExtras().getString("albumDesc");
+
+        String albumName = "My New Album";
+        String albumDesc = "This is a cool new album";
+
+        Log.i(DEBUG_TAG, "Album name: " + albumName);
+        Log.i(DEBUG_TAG, "Album description: " + albumDesc);
+
+        this.albumName = albumName;
+        this.albumDesc = albumDesc;
+
+        // Update UI
+        mTextAlbumName.setText(this.albumName);
+        // Creating album in database
+        saveAlbum(albumName, albumDesc);
+    }
+
 
     /**
      * This method creates a directory in the appropriate directory location
@@ -134,7 +203,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
     private File setUpPhotoFile() throws IOException {
 
         File f = createImageFile();
-        mCurrentPhotoPath = f.getAbsolutePath();
+        this.mCurrentPhotoPath = f.getAbsolutePath();
         Log.i(DEBUG_TAG, "Current photo path: " + mCurrentPhotoPath);
 
         return f;
@@ -257,10 +326,8 @@ public class AlbumEvent extends AlbumTrackerActivity {
     private void handleBigCameraPhoto() {
 
         if (mCurrentPhotoPath != null) {
-
             setPic();
             galleryAddPic();
-            mCurrentPhotoPath = null;
         }
 
     }
@@ -278,35 +345,9 @@ public class AlbumEvent extends AlbumTrackerActivity {
     }
 
 
-
-    Button.OnClickListener mTakePicOnClickListener =
-            new Button.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dispatchTakePictureIntent(ACTION_TAKE_PHOTO_B);
-                }
-            };
-
-    Button.OnClickListener mTakePicSOnClickListener =
-            new Button.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dispatchTakePictureIntent(ACTION_TAKE_PHOTO_S);
-                }
-            };
-
-    Button.OnClickListener mTakeVidOnClickListener =
-            new Button.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dispatchTakeVideoIntent();
-                }
-            };
-
-
     public void rec_speech() {
         Log.i(DEBUG_TAG, "Recording speech ...  ");
-        //Log.i(DEBUG_TAG, "Album ID: " + this.albumId);
+        Log.i(DEBUG_TAG, "Album ID: " + this.albumId);
         promptSpeechInput();
     }
 
@@ -337,15 +378,9 @@ public class AlbumEvent extends AlbumTrackerActivity {
         setContentView(R.layout.activity_album_events);
 
         mImageView1 = (ImageView) findViewById(R.id.imageView1);
-        mTextViewAlbumName = (TextView) findViewById(R.id.TextAlbumName);
-
-        // Getting album info from previous activity
-        // Intent albumInt = getIntent();
-        // String albumName = albumInt.getExtras().getString("albumName");
-        // String albumDesc = albumInt.getExtras().getString("albumDesc");
-
-        // Log.i(DEBUG_TAG, "Album name: " + albumName);
-        // Log.i(DEBUG_TAG, "Album description: " + albumDesc);
+        mTextAlbumName = (TextView) findViewById(R.id.TextAlbumName);
+        setAlbumInfo();
+        Log.i(DEBUG_TAG, "Album ID: " + getAlbumId());
 
         /**
          * Handling speech recording
@@ -354,8 +389,8 @@ public class AlbumEvent extends AlbumTrackerActivity {
         mTxtSpeechInput.setVisibility(EditText.INVISIBLE);
 
 
-        mRecordSpeech = (Button) findViewById(R.id.ButtonRecordSpeech);
-        //inal Button addEvent = (Button) findViewById(R.id.ButtonSaveAlbumEvent);
+        mRecordSpeech   = (Button) findViewById(R.id.ButtonRecordSpeech);
+        mSaveAlbumEvent = (Button) findViewById(R.id.ButtonSaveAlbumEvent);
 
         mRecordSpeech.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -363,6 +398,16 @@ public class AlbumEvent extends AlbumTrackerActivity {
                 rec_speech();
             }
         });
+
+        mSaveAlbumEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(DEBUG_TAG, "Album ID: " + getAlbumId());
+                Log.i(DEBUG_TAG, "Image Path:" + getCurrentPhotoPath());
+                add_event();
+            }
+        });
+
 
         /**
          * Handling photo recordings
@@ -392,6 +437,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
         switch (requestCode) {
             case ACTION_TAKE_PHOTO_B: {
                 if (resultCode == RESULT_OK) {
+                    Log.i(DEBUG_TAG, "About to handle photo");
                     handleBigCameraPhoto();
                 }
                 break;
@@ -424,6 +470,96 @@ public class AlbumEvent extends AlbumTrackerActivity {
 
 
 
+    /**
+     * Creating new album in database
+     */
+    public void saveAlbum(String albumName, String albumDesc){
+
+        Date today = new Date(System.currentTimeMillis());
+
+        SQLiteDatabase db = mDatabase.getWritableDatabase();
+        long albumId = 0;
+
+        db.beginTransaction();
+
+        try{
+            SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+            queryBuilder.setTables(AlbumTrackerDatabase.VirtAlbums.ALBUMS_TABLE_NAME);
+
+            ContentValues albumRecordToAdd = new ContentValues();
+            albumRecordToAdd.put(AlbumTrackerDatabase.VirtAlbums.ALBUM_TITLE_NAME, albumName);
+            albumRecordToAdd.put(AlbumTrackerDatabase.VirtAlbums.ALBUM_DESCRIPTION, albumDesc);
+            albumRecordToAdd.put(AlbumTrackerDatabase.VirtAlbums.ALBUM_DATE_ADDED, today.toString());
+
+            this.albumId = db.insert(AlbumTrackerDatabase.VirtAlbums.ALBUMS_TABLE_NAME, AlbumTrackerDatabase.VirtAlbums.ALBUM_TITLE_NAME,
+                    albumRecordToAdd);
+
+            db.setTransactionSuccessful();
+
+        } finally {
+            db.endTransaction();
+        }
+
+        db.close();
+    }
+
+    /**
+     *  Adding event to the album
+     */
+    public void add_event() {
+
+        Log.i(DEBUG_TAG, "Adding album event ...  ");
+        Log.i(DEBUG_TAG, "Album ID: " + getAlbumId());
+        Log.i(DEBUG_TAG, "Image Path:" + getCurrentPhotoPath());
+
+
+        Date today = new Date(System.currentTimeMillis());
+
+        SQLiteDatabase db = mDatabase.getWritableDatabase();
+        long eventId = 0;
+        db.beginTransaction();
+
+        try{
+            SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+            queryBuilder.setTables(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_TABLE_NAME);
+            ContentValues albumEventToAdd = new ContentValues();
+
+            albumEventToAdd.put(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_ALBUM_ID, this.albumId);
+            albumEventToAdd.put(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_DATE_ADDED, today.toString());
+            albumEventToAdd.put(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_AUDIO_LINK, "/audio_link");
+            albumEventToAdd.put(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_PHOTO_LINK, "\"" + getCurrentPhotoPath() + "\"");
+            albumEventToAdd.put(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_AUDIO_SPEECH, mTxtSpeechInput.getText().toString());
+            albumEventToAdd.put(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_EVENT_GPS, "1.5555, 5.55555");
+
+            eventId = db.insert(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_TABLE_NAME, AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_ALBUM_ID,
+                    albumEventToAdd);
+
+            db.setTransactionSuccessful();
+
+        } finally {
+            db.endTransaction();
+            resetUI();
+        }
+
+        db.close();
+        Log.i(DEBUG_TAG, "Album Event ID: " + eventId + " has been saved.");
+
+        // Clear up IU for next event
+    }
+
+    /**
+     *  Rest all widgets in the UI to record a new album event
+     */
+    private void resetUI(){
+        this.mTxtSpeechInput.setText("");
+        this.mTxtSpeechInput.setVisibility(EditText.INVISIBLE);
+        this.mCurrentPhotoPath = null;
+        this.mImageView1.setImageBitmap(null);
+
+        Toast.makeText(getApplicationContext(),
+                getString(R.string.album_event_saved),
+                Toast.LENGTH_SHORT).show();
+    }
 
     // Some lifecycle callbacks so that the image can survive orientation change
     @Override
