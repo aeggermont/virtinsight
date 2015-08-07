@@ -129,15 +129,19 @@ public class AlbumEvent extends AlbumTrackerActivity {
         return this.albumDesc;
     }
 
+    /**
+     * This method is called when a new album is created
+     * and an album name and description have been set
+     */
     private void setAlbumInfo(){
 
         // Getting album info from previous activity
-        //Intent albumInt = getIntent();
-        //String albumName = albumInt.getExtras().getString("albumName");
-        //String albumDesc = albumInt.getExtras().getString("albumDesc");
+        Intent albumInt = getIntent();
+        String albumName = albumInt.getExtras().getString("albumName");
+        String albumDesc = albumInt.getExtras().getString("albumDesc");
 
-        String albumName = "My New Album";
-        String albumDesc = "This is a cool new album";
+        //String albumName = "My New Album";
+        //String albumDesc = "This is a cool new album";
 
         Log.i(DEBUG_TAG, "Album name: " + albumName);
         Log.i(DEBUG_TAG, "Album description: " + albumDesc);
@@ -147,6 +151,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
 
         // Update UI
         mTextAlbumName.setText(this.albumName);
+
         // Creating album in database
         saveAlbum(albumName, albumDesc);
     }
