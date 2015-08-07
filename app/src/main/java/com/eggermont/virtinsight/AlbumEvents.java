@@ -1,5 +1,12 @@
 package com.eggermont.virtinsight;
 
+/**
+ * AlbumEvents
+ *
+ * TO BE REMOVED
+ */
+
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
