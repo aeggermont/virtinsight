@@ -140,9 +140,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
         String albumName = albumInt.getExtras().getString("albumName");
         String albumDesc = albumInt.getExtras().getString("albumDesc");
 
-        //String albumName = "My New Album";
-        //String albumDesc = "This is a cool new album";
-
         Log.i(DEBUG_TAG, "Album name: " + albumName);
         Log.i(DEBUG_TAG, "Album description: " + albumDesc);
 
@@ -151,7 +148,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
 
         // Update UI
         mTextAlbumName.setText(this.albumName);
-
         // Creating album in database
         saveAlbum(albumName, albumDesc);
     }
@@ -162,8 +158,8 @@ public class AlbumEvent extends AlbumTrackerActivity {
      * on the device.
      */
     private File getAlbumDir() {
-        File storageDir = null;
 
+        File storageDir = null;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
 
             storageDir = mAlbumStorageDirFactory.getAlbumStorageDir(getAlbumName());
@@ -213,6 +209,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
 
         return f;
     }
+    
 
     /**
      * There isn't enough memory to open up more than a couple camera photos
@@ -258,7 +255,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
         mImageView1.setImageBitmap(bitmap);
         mVideoUri = null;
         mImageView1.setVisibility(View.VISIBLE);
-        //mImageViewTest.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -535,8 +531,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
 
         db.close();
         Log.i(DEBUG_TAG, "Album Event ID: " + eventId + " has been saved.");
-
-        // Clear up IU for next event
     }
 
     /**
