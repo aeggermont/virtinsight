@@ -350,8 +350,10 @@ public class AlbumEvent extends AlbumTrackerActivity {
     private void handleBigCameraPhoto() {
 
         if (mCurrentPhotoPath != null) {
-            processImage();
-            galleryAddPic();
+            BitmapProcessingTask task = new BitmapProcessingTask(mImageView1);
+            task.execute(mCurrentPhotoPath);
+            //processImage();
+            //galleryAddPic();
         }
 
     }
@@ -371,10 +373,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
      * @param intent
      */
     private void handleCameraVideo(Intent intent) {
-        //mVideoUri = intent.getData();
-        //mVideoView.setVideoURI(mVideoUri);
-        //mImageBitmap = null;
-        //mVideoView.setVisibility(View.VISIBLE);
         mImageView1.setVisibility(View.INVISIBLE);
     }
 
