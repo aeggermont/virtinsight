@@ -10,13 +10,9 @@ package com.eggermont.virtinsight;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
-import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -31,7 +27,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -79,7 +74,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
     private Button mSaveAlbumEvent;
 
     private TextView mTxtSpeechInput;
-    private TextView mTextViewAlbumName;
     private TextView mTextAlbumName;
 
     // Album settings
@@ -197,7 +191,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
     }
 
     /**
-     * Sets the absolute path of for an image
+     * Sets the absolute path of for a captured image
      * @return reference to te file object
      * @throws IOException
      */
@@ -209,38 +203,68 @@ public class AlbumEvent extends AlbumTrackerActivity {
 
         return f;
     }
-    
+
 
     /**
-     * There isn't enough memory to open up more than a couple camera photos
-     * so pre-scale the target bitmap into which the file is decoded
+     * This method computes sampling factor to subsample an image to
+     * load a smaller version into memory for display preview purposes
+     *
+     * @param options
+     * @param reqWidth desired width for the subsampled image
+     * @param reqHeight desired height for the subsampled image
+     * @return samplicator to decode an image
      */
-    private void setPic() {
+    public static int computeSubsamplingSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight){
+
+        int inSampleSize = 1;
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+
+        if (height > reqHeight || width > reqWidth) {
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+
+    }
+
+    /**
+     * This method scales down a captured image photo into
+     * a target photo image size to display in the UI in order
+     * to save memory resources.
+     */
+    private void processImage() {
 
 		/* Get the size of the ImageView */
-        int targetW = mImageView1.getWidth();
-        int targetH = mImageView1.getHeight();
+        int targetPhotoWidth = mImageView1.getWidth();
+        int targetPhotoHeight = mImageView1.getHeight();
 
-        // Lets try to view the file in its original size
-        Log.i(DEBUG_TAG, "Original IamegView width:  " +  targetW);
-        Log.i(DEBUG_TAG, "Original IamegView height:  " + targetH);
+        int scaleFactor;
 
-		/* Get the size of the image */
+        Log.i(DEBUG_TAG, "Original IamegView width:  " +  targetPhotoWidth);
+        Log.i(DEBUG_TAG, "Original IamegView height:  " + targetPhotoHeight);
+
+        // Get the size of the row image
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
 
-        Log.i(DEBUG_TAG, "Original Photo width:  " +  photoW);
-        Log.i(DEBUG_TAG, "Original Photo height:  " + photoH);
+        int rawPhotoWidth = bmOptions.outWidth;
+        int rawPhotoHeight = bmOptions.outHeight;
 
-		/* Figure out which way needs to be reduced less */
-        int scaleFactor = 1;
-        if ((targetW > 0) || (targetH > 0)) {
-            scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-        }
+        Log.i(DEBUG_TAG, "Original Photo width:  " +  rawPhotoWidth);
+        Log.i(DEBUG_TAG, "Original Photo height:  " + rawPhotoHeight);
 
+        scaleFactor = computeSubsamplingSize(bmOptions, targetPhotoWidth, targetPhotoHeight);
         Log.i(DEBUG_TAG, "Sacling by factor of: " + scaleFactor );
 
 		/* Set bitmap options to scale the image decode target */
@@ -248,12 +272,11 @@ public class AlbumEvent extends AlbumTrackerActivity {
         bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;
 
-		/* Decode the JPEG file into a Bitmap */
+		// Decode photo file into a subsampled image
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
 
 		/* Associate the Bitmap to the ImageView */
         mImageView1.setImageBitmap(bitmap);
-        mVideoUri = null;
         mImageView1.setVisibility(View.VISIBLE);
     }
 
@@ -327,7 +350,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
     private void handleBigCameraPhoto() {
 
         if (mCurrentPhotoPath != null) {
-            setPic();
+            processImage();
             galleryAddPic();
         }
 
