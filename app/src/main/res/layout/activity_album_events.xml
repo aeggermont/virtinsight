@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
+
 
     <TextView
         android:layout_width="fill_parent"
@@ -13,82 +15,64 @@
         android:id="@+id/TextAlbumName" />
 
 
-    <ImageView
-        android:layout_height="100dp"
-        android:layout_width="100dp"
-        android:visibility="visible"
-        android:id="@+id/imageView1" />
+    <!-- Container view to scroll horizontally which gives the carousel effect -->
+    <HorizontalScrollView android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
 
-    <TableLayout
-        android:id="@+id/TableLayout02"
+        <!-- Carousel items container - lays out items horizontally -->
+        <LinearLayout android:id="@+id/imgCarousel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_height="200dp"
+                android:layout_width="200dp"
+                android:visibility="visible"
+                android:id="@+id/imageView1" />
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/txtSpeechInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:stretchColumns="1" >
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
+        android:textStyle="normal" />
 
 
-   <TableRow
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content" >
-
-       <TextView
-           android:id="@+id/txtSpeechInput"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:layout_alignParentTop="true"
-           android:layout_centerHorizontal="true"
-           android:textColor="@color/white"
-           android:textStyle="normal" />
-
-   </TableRow>
-
-    <TableRow
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+    <LinearLayout android:id="@+id/buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/btnIntend"
             android:text="@string/album_take_photo"
-            android:layout_below="@+id/TableLayout02"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_alignParentStart="true" />
-
-    </TableRow>
-
-
-        <TableRow
+            android:layout_alignParentStart="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content" />
 
-            <Button
-                android:id="@+id/ButtonRecordSpeech"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/album_rec_speech"
-                android:layout_below="@+id/TableLayout02"
-                android:layout_alignParentStart="true">
-            </Button>
+        <Button
+            android:id="@+id/ButtonRecordSpeech"
 
-         </TableRow>
-
-        <TableRow
+            android:text="@string/album_rec_speech"
+            android:layout_alignParentStart="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
+        </Button>
 
-            <Button
-                android:id="@+id/ButtonSaveAlbumEvent"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/album_add_event"
-                android:layout_below="@+id/TableLayout02"
-                android:layout_alignParentStart="true">
-            </Button>
-
-        </TableRow>
-
-    </TableLayout>
-
-
+        <Button
+            android:id="@+id/ButtonSaveAlbumEvent"
+            android:text="@string/album_add_event"
+            android:layout_alignParentStart="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </Button>
+    </LinearLayout>
 
 </LinearLayout>
 
