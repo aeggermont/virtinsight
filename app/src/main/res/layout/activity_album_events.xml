@@ -13,6 +13,12 @@
         android:id="@+id/TextAlbumName" />
 
 
+    <ImageView
+        android:layout_height="100dp"
+        android:layout_width="100dp"
+        android:visibility="visible"
+        android:id="@+id/imageView1" />
+
     <TableLayout
         android:id="@+id/TableLayout02"
         android:layout_width="wrap_content"
@@ -24,15 +30,13 @@
        android:layout_width="wrap_content"
        android:layout_height="wrap_content" >
 
-       <EditText
+       <TextView
            android:id="@+id/txtSpeechInput"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:layout_alignParentTop="true"
            android:layout_centerHorizontal="true"
-           android:layout_marginTop="100dp"
            android:textColor="@color/white"
-           android:textSize="26dp"
            android:textStyle="normal" />
 
    </TableRow>
@@ -42,15 +46,15 @@
         android:layout_height="wrap_content" >
 
         <Button
-            android:id="@+id/ButtonTakePhoto"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:id="@+id/btnIntend"
             android:text="@string/album_take_photo"
             android:layout_below="@+id/TableLayout02"
-            android:layout_alignParentStart="true">
-        </Button>
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_alignParentStart="true" />
 
     </TableRow>
+
 
         <TableRow
             android:layout_width="wrap_content"
