@@ -8,9 +8,10 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-
 import java.io.File;
 import java.lang.ref.WeakReference;
+
+
 /**
  * Created by Antonio Eggermont  on 8/9/15.
  */
@@ -26,7 +27,6 @@ public class BitmapProcessingTask extends AsyncTask<String, Void, Bitmap> {
     public BitmapProcessingTask(ImageView imageView) {
         // Use a WeakReference to ensure the ImageView can be garbage collected
         imageViewReference = new WeakReference<ImageView>(imageView);
-        mCurrentPhotoPath = mCurrentPhotoPath;
     }
 
     /**
@@ -127,12 +127,5 @@ public class BitmapProcessingTask extends AsyncTask<String, Void, Bitmap> {
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         return bitmap;
 
-
-		/* Associate the Bitmap to the ImageView */
-        //imageView.setImageBitmap(bitmap);
-        //imageView.setVisibility(View.VISIBLE);
     }
-
-
-
 }
