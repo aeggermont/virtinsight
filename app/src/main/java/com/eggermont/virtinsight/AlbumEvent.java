@@ -204,82 +204,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
         return f;
     }
 
-
-    /**
-     * This method computes sampling factor to subsample an image to
-     * load a smaller version into memory for display preview purposes
-     *
-     * @param options
-     * @param reqWidth desired width for the subsampled image
-     * @param reqHeight desired height for the subsampled image
-     * @return samplicator to decode an image
-     */
-    public static int computeSubsamplingSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight){
-
-        int inSampleSize = 1;
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-
-        if (height > reqHeight || width > reqWidth) {
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-
-    }
-
-    /**
-     * This method scales down a captured image photo into
-     * a target photo image size to display in the UI in order
-     * to save memory resources.
-     */
-    private void processImage() {
-
-		/* Get the size of the ImageView */
-        int targetPhotoWidth = mImageView1.getWidth();
-        int targetPhotoHeight = mImageView1.getHeight();
-
-        int scaleFactor;
-
-        Log.i(DEBUG_TAG, "Original IamegView width:  " +  targetPhotoWidth);
-        Log.i(DEBUG_TAG, "Original IamegView height:  " + targetPhotoHeight);
-
-        // Get the size of the row image
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-
-        int rawPhotoWidth = bmOptions.outWidth;
-        int rawPhotoHeight = bmOptions.outHeight;
-
-        Log.i(DEBUG_TAG, "Original Photo width:  " +  rawPhotoWidth);
-        Log.i(DEBUG_TAG, "Original Photo height:  " + rawPhotoHeight);
-
-        scaleFactor = computeSubsamplingSize(bmOptions, targetPhotoWidth, targetPhotoHeight);
-        Log.i(DEBUG_TAG, "Sacling by factor of: " + scaleFactor );
-
-		/* Set bitmap options to scale the image decode target */
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-		// Decode photo file into a subsampled image
-        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-
-		/* Associate the Bitmap to the ImageView */
-        mImageView1.setImageBitmap(bitmap);
-        mImageView1.setVisibility(View.VISIBLE);
-    }
-
     /**
      * Sends a broacast to publish recorded photo to
      * the photo gallery manager
@@ -352,8 +276,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
         if (mCurrentPhotoPath != null) {
             BitmapProcessingTask task = new BitmapProcessingTask(mImageView1);
             task.execute(mCurrentPhotoPath);
-            //processImage();
-            //galleryAddPic();
+            galleryAddPic();
         }
 
     }
