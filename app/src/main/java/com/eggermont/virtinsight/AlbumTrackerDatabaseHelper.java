@@ -1,8 +1,5 @@
 package com.eggermont.virtinsight;
 
-import com.eggermont.virtinsight.AlbumTrackerDatabase.PetType;
-import com.eggermont.virtinsight.AlbumTrackerDatabase.Pets;
-
 import com.eggermont.virtinsight.AlbumTrackerDatabase.VirtAlbums;
 import com.eggermont.virtinsight.AlbumTrackerDatabase.AlbumEvents;
 
@@ -34,20 +31,7 @@ class AlbumTrackerDatabaseHelper extends SQLiteOpenHelper {
 
 		db = db;
 
-		Log.i(DEBUG_TAG, "CREATINg DATABASES ...  ");
-
-		// Create the PetType table
-		db.execSQL("CREATE TABLE " + PetType.PETTYPE_TABLE_NAME + " ("
-				+ PetType._ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
-				+ PetType.PET_TYPE_NAME + " TEXT" + ");");
-
-		// Create the Pets table
-		db.execSQL("CREATE TABLE " + Pets.PETS_TABLE_NAME + " (" + Pets._ID
-				+ " INTEGER PRIMARY KEY AUTOINCREMENT ," + Pets.PET_NAME
-				+ " TEXT," + Pets.PET_TYPE_ID + " INTEGER" // this is a foreign
-															// key to the pet
-															// type table
-				+ ");");
+		Log.i(DEBUG_TAG, "creating database tables ...  ");
 
 		// Create Album table
 		db.execSQL("CREATE TABLE " + VirtAlbums.ALBUMS_TABLE_NAME + " ("
