@@ -2,7 +2,12 @@ package com.eggermont.virtinsight;
 
 import android.provider.BaseColumns;
 
-// We use this class to keep track of database schema information like table and column names
+
+/**
+ * This class is used to keep track of the different table schemas
+ * and column names for the database
+ */
+
 public final class AlbumTrackerDatabase {
 
 	private AlbumTrackerDatabase() {}
