@@ -20,7 +20,7 @@ public class AlbumTrackerActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mDatabase = new AlbumTrackerDatabaseHelper(this.getApplicationContext());
-		Log.i(DEBUG_TAG, "Just instantiated AlbumTrackerActivity() ...  ");
+		Log.i(DEBUG_TAG, "Instantiated AlbumTrackerActivity() ...  ");
 	}
 
 
