@@ -11,12 +11,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-// This class handles the creation and versioning of the application database
+
+/**
+ *  This class handles the creation of tables in the database
+ *
+ */
 
 class AlbumTrackerDatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String DATABASE_NAME = "pet_tracker.db";
 	private static final int DATABASE_VERSION = 1;
+	private SQLiteDatabase db;
 
 	private static final String DEBUG_TAG = AlbumTrackerDatabaseHelper.class.getCanonicalName();
 
@@ -27,6 +32,7 @@ class AlbumTrackerDatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 
+		db = db;
 
 		Log.i(DEBUG_TAG, "CREATINg DATABASES ...  ");
 
@@ -54,12 +60,12 @@ class AlbumTrackerDatabaseHelper extends SQLiteOpenHelper {
 		// Create Album Events table
 		db.execSQL("CREATE TABLE " + AlbumEvents.ALBUMEVENTS_TABLE_NAME + " ("
 				+ AlbumEvents._ID + " INTEGER PRIMARY KEY AUTOINCREMENT , "
-				+ AlbumEvents.ALBUMEVENTS_EVENT_GPS  + " TEXT , "
+				+ AlbumEvents.ALBUMEVENTS_EVENT_GPS + " TEXT , "
 				+ AlbumEvents.ALBUMEVENTS_AUDIO_SPEECH + " TEXT , "
 				+ AlbumEvents.ALBUMEVENTS_PHOTO_LINK + " TEXT , "
 				+ AlbumEvents.ALBUMEVENTS_AUDIO_LINK + " TEXT , "
 				+ AlbumEvents.ALBUMEVENTS_DATE_ADDED + " DATE , "
-				+ AlbumEvents.ALBUMEVENTS_ALBUM_ID + " INTEGER" + ")" );
+				+ AlbumEvents.ALBUMEVENTS_ALBUM_ID + " INTEGER" + ")");
 	}
 
 
