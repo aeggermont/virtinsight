@@ -132,13 +132,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
     }
 
 
-
-
-
-
-
-    }
-
     /**
      * This method is called when a new album is created
      * and an album name and description have been set
@@ -284,7 +277,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
             Log.i(DEBUG_TAG, "About to process photo bitmap, index: " + photoIndex);
 
             this.mCurrentImageView = new ImageView(this);
-            this.mCurrentImageView.setId(this.photoIndex);
+            this.mCurrentImageView.setId(photoIndex);
 
             LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(this.imageWidth,this.imageWidth);
             this.mCurrentImageView.setLayoutParams(parms);
@@ -368,7 +361,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
             public void onClick(View v) {
                 Log.i(DEBUG_TAG, "Album ID: " + getAlbumId());
                 Log.i(DEBUG_TAG, "Image Path:" + getCurrentPhotoPath());
-                add_event();
+                addNewEvent();
             }
         });
 
@@ -432,82 +425,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
         } // switch
     }
 
-
-
-    /**
-     * Creating new album in database
-     */
-    public void saveAlbum(String albumName, String albumDesc){
-
-        Date today = new Date(System.currentTimeMillis());
-
-        SQLiteDatabase db = mDatabase.getWritableDatabase();
-        long albumId = 0;
-
-        db.beginTransaction();
-
-        try{
-            SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-            queryBuilder.setTables(AlbumTrackerDatabase.VirtAlbums.ALBUMS_TABLE_NAME);
-
-            ContentValues albumRecordToAdd = new ContentValues();
-            albumRecordToAdd.put(AlbumTrackerDatabase.VirtAlbums.ALBUM_TITLE_NAME, albumName);
-            albumRecordToAdd.put(AlbumTrackerDatabase.VirtAlbums.ALBUM_DESCRIPTION, albumDesc);
-            albumRecordToAdd.put(AlbumTrackerDatabase.VirtAlbums.ALBUM_DATE_ADDED, today.toString());
-
-            this.albumId = db.insert(AlbumTrackerDatabase.VirtAlbums.ALBUMS_TABLE_NAME, AlbumTrackerDatabase.VirtAlbums.ALBUM_TITLE_NAME,
-                    albumRecordToAdd);
-
-            db.setTransactionSuccessful();
-
-        } finally {
-            db.endTransaction();
-        }
-
-        db.close();
-    }
-
-    /**
-     *  Adding event to the album
-     */
-    public void add_event() {
-
-        Log.i(DEBUG_TAG, "Adding album event ...  ");
-        Log.i(DEBUG_TAG, "Album ID: " + getAlbumId());
-        Log.i(DEBUG_TAG, "Image Path:" + getCurrentPhotoPath());
-
-
-        Date today = new Date(System.currentTimeMillis());
-
-        SQLiteDatabase db = mDatabase.getWritableDatabase();
-        long eventId = 0;
-        db.beginTransaction();
-
-        try{
-            SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-            queryBuilder.setTables(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_TABLE_NAME);
-            ContentValues albumEventToAdd = new ContentValues();
-
-            albumEventToAdd.put(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_ALBUM_ID, this.albumId);
-            albumEventToAdd.put(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_DATE_ADDED, today.toString());
-            albumEventToAdd.put(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_AUDIO_LINK, "/audio_link");
-            albumEventToAdd.put(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_PHOTO_LINK, "\"" + getCurrentPhotoPath() + "\"");
-            albumEventToAdd.put(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_AUDIO_SPEECH, mTxtSpeechInput.getText().toString());
-            albumEventToAdd.put(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_EVENT_GPS, "1.5555, 5.55555");
-
-            eventId = db.insert(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_TABLE_NAME, AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_ALBUM_ID,
-                    albumEventToAdd);
-
-            db.setTransactionSuccessful();
-
-        } finally {
-            db.endTransaction();
-            resetUI();
-        }
-
-        db.close();
-        Log.i(DEBUG_TAG, "Album Event ID: " + eventId + " has been saved.");
-    }
 
     /**
      *  Rest all widgets in the UI to record a new album event
