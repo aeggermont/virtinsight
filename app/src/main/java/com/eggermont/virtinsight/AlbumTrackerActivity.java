@@ -4,6 +4,12 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 
+/**
+ *  Manages the instantiation and closing of a local
+ *  data base ( SQLLite ) to track different media
+ *  events captures in the media album.
+ */
+
 public class AlbumTrackerActivity extends Activity {
 
 	private static final String DEBUG_TAG = AlbumTrackerActivity.class.getCanonicalName();
@@ -14,8 +20,13 @@ public class AlbumTrackerActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mDatabase = new AlbumTrackerDatabaseHelper(this.getApplicationContext());
-		Log.i(DEBUG_TAG, "Just instantiated AlbumTrackerDatabaseHelper() ...  ");
+		Log.i(DEBUG_TAG, "Just instantiated AlbumTrackerActivity() ...  ");
 	}
+
+
+	/**
+	 * Closes the SQLite database upon desctroying this activity
+	 */
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
