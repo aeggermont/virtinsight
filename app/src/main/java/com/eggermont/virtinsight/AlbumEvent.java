@@ -27,11 +27,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -59,15 +61,11 @@ public class AlbumEvent extends AlbumTrackerActivity {
 
     private Uri mVideoUri;
 
-    private String mCurrentPhotoPath;
-
     private static final String JPEG_FILE_PREFIX = "IMG_";
     private static final String JPEG_FILE_SUFFIX = ".jpg";
 
     private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
 
-    // UI Widgets
-    private ImageView mImageView1;
     private TextView mEditText;
     private Bitmap mImageBitmap;
     private Button mRecordSpeech;
@@ -75,6 +73,16 @@ public class AlbumEvent extends AlbumTrackerActivity {
 
     private TextView mTxtSpeechInput;
     private TextView mTextAlbumName;
+
+
+
+    //Photo  carousel settings
+    private LinearLayout mCarouselContainer;
+    private ImageView mCurrentImageView;
+    private String mCurrentPhotoPath;
+    private int photoIndex;
+    private int imageWidth;
+    private static final float INITIAL_ITEMS_COUNT = 2.5F;
 
     // Album settings
     private long albumId;
@@ -121,6 +129,14 @@ public class AlbumEvent extends AlbumTrackerActivity {
 
     private String getAlbumDescription(){
         return this.albumDesc;
+    }
+
+
+
+
+
+
+
     }
 
     /**
@@ -255,18 +271,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
         startActivityForResult(takeVideoIntent, ACTION_TAKE_VIDEO);
     }
 
-    /**
-     *
-     * @param intent
-     */
-    private void handleSmallCameraPhoto(Intent intent) {
-        Bundle extras = intent.getExtras();
-        mImageBitmap = (Bitmap) extras.get("data");
-        mImageView1.setImageBitmap(mImageBitmap);
-        mVideoUri = null;
-        mImageView1.setVisibility(View.VISIBLE);
-        mVideoView.setVisibility(View.INVISIBLE);
-    }
 
     /**
      *
@@ -274,12 +278,49 @@ public class AlbumEvent extends AlbumTrackerActivity {
     private void handleBigCameraPhoto() {
 
         if (mCurrentPhotoPath != null) {
-            BitmapProcessingTask task = new BitmapProcessingTask(mImageView1);
+
+            this.photoIndex +=1;
+
+            Log.i(DEBUG_TAG, "About to process photo bitmap, index: " + photoIndex);
+
+            this.mCurrentImageView = new ImageView(this);
+            this.mCurrentImageView.setId(this.photoIndex);
+
+            LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(this.imageWidth,this.imageWidth);
+            this.mCurrentImageView.setLayoutParams(parms);
+            this.mCurrentImageView.setId(photoIndex);
+            //this.mCurrentImageView.setTag(100);
+
+            Log.i(DEBUG_TAG, "Photo Index:  " + photoIndex);
+            BitmapProcessingTask task = new BitmapProcessingTask(mCurrentImageView);
             task.execute(mCurrentPhotoPath);
+
+            // Set the size of the image view to the previously computed value
+            //imageItem.setLayoutParams(new LinearLayout.LayoutParams(this.imageWidth, this.imageWidth));
+            this.mCurrentImageView.setFocusable(true);
+            this.mCurrentImageView.setFocusableInTouchMode(true);
+            this.mCarouselContainer.addView(mCurrentImageView);
+
+            int count = mCarouselContainer.getChildCount();
+            Log.i(DEBUG_TAG, "Current photo count: " + count);
+
+            mCurrentImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.i(DEBUG_TAG, ">> Clicking : " + view.getId());
+                    Log.i(DEBUG_TAG, ">> Resources : " + view.getResources());
+                    Log.i(DEBUG_TAG, ">> Path : " + view.getTag());
+                }
+            });
+
+
+            //mCarouselContainer.getChildAt(count);
+            //mCarouselContainer.setNextFocusDownId(photoIndex);
             galleryAddPic();
         }
 
     }
+
 
     /**
      * Get the captured text from SpeechText activity and
@@ -291,14 +332,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
         mTxtSpeechInput.setText(data.getStringExtra("eventDescription"));
     }
 
-    /**
-     * Disabling camera reocrdings for now
-     * @param intent
-     */
-    private void handleCameraVideo(Intent intent) {
-        mImageView1.setVisibility(View.INVISIBLE);
-    }
-
 
 
     /** Called when the activity is first created. */
@@ -307,14 +340,22 @@ public class AlbumEvent extends AlbumTrackerActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album_events);
 
-        mImageView1 = (ImageView) findViewById(R.id.imageView1);
+
         mTextAlbumName = (TextView) findViewById(R.id.TextAlbumName);
-        setAlbumInfo();
+
         Log.i(DEBUG_TAG, "Album ID: " + getAlbumId());
 
+        // Set widget references
         mTxtSpeechInput = (TextView) findViewById(R.id.txtSpeechInput);
         mRecordSpeech   = (Button) findViewById(R.id.ButtonRecordSpeech);
         mSaveAlbumEvent = (Button) findViewById(R.id.ButtonSaveAlbumEvent);
+        photoIndex = 0;
+
+        // Get reference to the carousel container
+        mCarouselContainer = (LinearLayout) findViewById(R.id.photoCarousel);
+
+        // Start new album or load album if already exists
+        setAlbumInfo();
 
         mRecordSpeech.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -322,7 +363,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
                 dispatchSpeechTextIntent();
             }
         });
-
         mSaveAlbumEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -333,13 +373,8 @@ public class AlbumEvent extends AlbumTrackerActivity {
         });
 
 
-        /**
-         * Handling photo recordings
-         */
-        //mVideoView = (VideoView) findViewById(R.id.videoView1);
+        // TODO: Needs to be refactored
         mImageBitmap = null;
-        //mVideoUri = null;
-
 
         Button picBtn = (Button) findViewById(R.id.btnIntend);
         setBtnListenerOrDisable(
@@ -348,12 +383,22 @@ public class AlbumEvent extends AlbumTrackerActivity {
                 MediaStore.ACTION_IMAGE_CAPTURE
         );
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
             mAlbumStorageDirFactory = new FroyoAlbumDirFactory();
         } else {
             mAlbumStorageDirFactory = new BaseAlbumDirFactory();
         }
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        // Compute the width of a carousel item based on the screen width and number of initial items.
+        final DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        this.imageWidth = (int) (displayMetrics.widthPixels / INITIAL_ITEMS_COUNT);
+
     }
 
     /**
@@ -377,19 +422,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
                 break;
             } // ACTION_TAKE_PHOTO_B
 
-            case ACTION_TAKE_PHOTO_S: {
-                if (resultCode == RESULT_OK) {
-                    handleSmallCameraPhoto(data);
-                }
-                break;
-            } // ACTION_TAKE_PHOTO_S
-
-            case ACTION_TAKE_VIDEO: {
-                if (resultCode == RESULT_OK) {
-                    handleCameraVideo(data);
-                }
-                break;
-            } // ACTION_TAKE_VIDEO
             case ACTION_CAPTURE_TEXT: {
                 if ( resultCode == RESULT_OK ){
                     Log.i(DEBUG_TAG, "About to handle text");
@@ -484,7 +516,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
         this.mTxtSpeechInput.setText("");
         this.mTxtSpeechInput.setVisibility(EditText.INVISIBLE);
         this.mCurrentPhotoPath = null;
-        this.mImageView1.setImageBitmap(null);
+        //this.mCurrentImageView.setImageBitmap(null);
 
         Toast.makeText(getApplicationContext(),
                 getString(R.string.album_event_saved),
@@ -506,8 +538,8 @@ public class AlbumEvent extends AlbumTrackerActivity {
         super.onRestoreInstanceState(savedInstanceState);
         mImageBitmap = savedInstanceState.getParcelable(BITMAP_STORAGE_KEY);
         mVideoUri = savedInstanceState.getParcelable(VIDEO_STORAGE_KEY);
-        mImageView1.setImageBitmap(mImageBitmap);
-        mImageView1.setVisibility(
+        mCurrentImageView.setImageBitmap(mImageBitmap);
+        mCurrentImageView.setVisibility(
                 savedInstanceState.getBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY) ?
                         ImageView.VISIBLE : ImageView.INVISIBLE
         );
