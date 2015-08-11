@@ -12,16 +12,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -151,6 +146,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
 
         // Update UI
         mTextAlbumName.setText(this.albumName);
+
         // Creating album in database
         saveAlbum(albumName, albumDesc);
     }
@@ -331,17 +327,13 @@ public class AlbumEvent extends AlbumTrackerActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_album_events);
-
-
-        mTextAlbumName = (TextView) findViewById(R.id.TextAlbumName);
-
-        Log.i(DEBUG_TAG, "Album ID: " + getAlbumId());
+        setContentView(R.layout.activity_album_events)
 
         // Set widget references
         mTxtSpeechInput = (TextView) findViewById(R.id.txtSpeechInput);
         mRecordSpeech   = (Button) findViewById(R.id.ButtonRecordSpeech);
         mSaveAlbumEvent = (Button) findViewById(R.id.ButtonSaveAlbumEvent);
+        mTextAlbumName = (TextView) findViewById(R.id.TextAlbumName);
         photoIndex = 0;
 
         // Get reference to the carousel container
@@ -361,7 +353,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
             public void onClick(View v) {
                 Log.i(DEBUG_TAG, "Album ID: " + getAlbumId());
                 Log.i(DEBUG_TAG, "Image Path:" + getCurrentPhotoPath());
-                addNewEvent();
+                addNewEvent(getAlbumId(), getCurrentPhotoPath(),mTxtSpeechInput.getText().toString());
             }
         });
 
