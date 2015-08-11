@@ -37,7 +37,7 @@ public class AlbumTrackerActivity extends Activity {
 	 * @param txtSpeechInput
 	 * @return
 	 */
-	public long addNewEvent(int albumId, String currentPhotoPath, String txtSpeechInput ){
+	public long addNewEvent(long albumId, String currentPhotoPath, String txtSpeechInput ){
 
 		Log.i(DEBUG_TAG, ">>> Adding an new event");
 		Log.i(DEBUG_TAG, "Adding album event ...  ");
@@ -79,14 +79,13 @@ public class AlbumTrackerActivity extends Activity {
 	 *  This method creats a new album in the data base if thte album does
 	 *  not exist
 	 *
-	 * @param albumId
 	 * @param albumName
 	 * @param albumDesc
 	 */
-	public void saveAlbum(long albumId, String albumName, String albumDesc){
+	public void saveAlbum(String albumName, String albumDesc){
 
 		Date today = new Date(System.currentTimeMillis());
-
+		long albumId = 0;
 		SQLiteDatabase db = mDatabase.getWritableDatabase();
 
 		db.beginTransaction();
