@@ -2,12 +2,17 @@ package com.eggermont.virtinsight;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
+import android.widget.TableLayout;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *  Manages the instantiation and closing of a local
@@ -39,9 +44,6 @@ public class AlbumTrackerActivity extends Activity {
 	 */
 	public long addNewEvent(long albumId, String currentPhotoPath, String txtSpeechInput ){
 
-		Log.i(DEBUG_TAG, ">>> Adding an new event");
-		Log.i(DEBUG_TAG, "Adding album event ...  ");
-
 		Date today = new Date(System.currentTimeMillis());
 
 		SQLiteDatabase db = mDatabase.getWritableDatabase();
@@ -71,9 +73,64 @@ public class AlbumTrackerActivity extends Activity {
 
 		db.close();
 
-		Log.i(DEBUG_TAG, "Album Event ID: " + eventId + " has been saved.");
 		return eventId;
 	}
+
+
+	/**
+	 * This method gets a list of all albums availbale in the database
+	 *
+	 * @return a hashmap with all album records by album ids as keys
+	 */
+	public HashMap <String, HashMap<String,String>> getAlbumListRecords() {
+		HashMap albumInventory = new HashMap<Integer, HashMap<String, String>>();
+
+		// SQL Query to fetch albums from database
+		SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+		queryBuilder.setTables(AlbumTrackerDatabase.VirtAlbums.ALBUMS_TABLE_NAME);
+
+		// Get the Database and run the query
+		SQLiteDatabase db = mDatabase.getReadableDatabase();
+
+		String asColumnsToReturn[] = {AlbumTrackerDatabase.VirtAlbums.ALBUMS_TABLE_NAME + "." + AlbumTrackerDatabase.VirtAlbums.ALBUM_TITLE_NAME,
+				AlbumTrackerDatabase.VirtAlbums.ALBUMS_TABLE_NAME + "." + AlbumTrackerDatabase.VirtAlbums.ALBUM_DESCRIPTION,
+				AlbumTrackerDatabase.VirtAlbums.ALBUMS_TABLE_NAME + "." + AlbumTrackerDatabase.VirtAlbums.ALBUM_DATE_ADDED,
+				AlbumTrackerDatabase.VirtAlbums.ALBUMS_TABLE_NAME + "." + AlbumTrackerDatabase.VirtAlbums._ID};
+
+		//Cursor c = queryBuilder.query(db, asColumnsToReturn, null, null, null, null, VirtAlbums.DEFAULT_SORT_ORDER);
+
+		Cursor allRows = queryBuilder.query(db, asColumnsToReturn, null, null, null, null, null, null);
+
+		Log.i(DEBUG_TAG, "Count of album records: " + allRows.getCount());
+		Log.i(DEBUG_TAG, "asColumnsToReturn : " + asColumnsToReturn.toString());
+
+		if (allRows.moveToFirst()) {
+			// Iterate over each cursor
+			do {
+				HashMap<String, String> record = new HashMap<String, String>();
+				record.put("album_id", Integer.toString(allRows.getInt(allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums._ID))));
+				record.put("title_name", allRows.getString(allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums.ALBUM_TITLE_NAME)));
+				record.put("date_added", allRows.getString(allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums.ALBUM_DATE_ADDED)));
+				record.put("description", allRows.getString(allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums.ALBUM_DESCRIPTION)));
+
+				albumInventory.put(Integer.toString(allRows.getInt(
+								allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums._ID))),
+						record);
+
+				Log.i(DEBUG_TAG, "ID " + allRows.getInt(allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums._ID)));
+				Log.i(DEBUG_TAG, allRows.getString(allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums.ALBUM_TITLE_NAME)));
+				Log.i(DEBUG_TAG, allRows.getString(allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums.ALBUM_DATE_ADDED)));
+				Log.i(DEBUG_TAG, allRows.getString(allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums.ALBUM_DESCRIPTION)));
+
+			} while (allRows.moveToNext());
+		}
+
+		allRows.close();
+		db.close();
+
+		return albumInventory;
+	}
+
 
 	/**
 	 *  This method creats a new album in the data base if thte album does
@@ -109,6 +166,28 @@ public class AlbumTrackerActivity extends Activity {
 		}
 
 		db.close();
+	}
+
+
+
+	public String [] getStoredAlbums(){
+
+		// SQL Query to fetch albums from database
+		SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+		queryBuilder.setTables(AlbumTrackerDatabase.VirtAlbums.ALBUMS_TABLE_NAME);
+
+		// Get the Database and run the query
+		SQLiteDatabase db = mDatabase.getReadableDatabase();
+
+		String asColumnsToReturn[] = { AlbumTrackerDatabase.VirtAlbums.ALBUMS_TABLE_NAME + "." + AlbumTrackerDatabase.VirtAlbums.ALBUM_TITLE_NAME,
+				AlbumTrackerDatabase.VirtAlbums.ALBUMS_TABLE_NAME + "." + AlbumTrackerDatabase.VirtAlbums.ALBUM_DESCRIPTION,
+				AlbumTrackerDatabase.VirtAlbums.ALBUMS_TABLE_NAME + "." + AlbumTrackerDatabase.VirtAlbums.ALBUM_DATE_ADDED,
+				AlbumTrackerDatabase.VirtAlbums.ALBUMS_TABLE_NAME + "." + AlbumTrackerDatabase.VirtAlbums._ID };
+
+		Cursor c = queryBuilder.query(db, asColumnsToReturn, null, null, null, null, AlbumTrackerDatabase.VirtAlbums.DEFAULT_SORT_ORDER);
+
+		return asColumnsToReturn;
+
 	}
 
 
