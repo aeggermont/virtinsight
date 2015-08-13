@@ -4,58 +4,83 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 //import com.advancedandroidbook.pettracker.AlbumTrackerDatabase.Pets;
 import com.eggermont.virtinsight.AlbumTrackerDatabase.VirtAlbums;
+
+import java.net.DatagramPacket;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 // Pet Listing Screen
 public class AlbumTrackerListActivity extends AlbumTrackerActivity {
 
+	private static final String DEBUG_TAG = AlbumTrackerListActivity.class.getCanonicalName();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.showpets);
-		
+
 		// Fill TableLayout with database results
-		fillAlbumList();
-		
+		getAlbumList();
+
 		// Handle Go to List button
-		final Button gotoEntry = (Button) findViewById(R.id.ButtonEnterMorePets);
-		gotoEntry.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				// Go to other activity that displays pet list
-				finish();
-			}
-		});
+		/**
+		 final Button gotoEntry = (Button) findViewById(R.id.ButtonEnterMorePets);
+		 gotoEntry.setOnClickListener(new View.OnClickListener() {
+		 public void onClick(View v) {
+		 // Go to other activity that displays pet list
+		 finish();
+		 }
+		 });*/
 	}
-	
 
-	public void fillAlbumList()
-	{
-		// TableLayout where we want to Display list
-		final TableLayout petTable = (TableLayout) findViewById(R.id.TableLayout_PetList);
+	/**
+	 * Gets all the events for a specific album id
+	 */
+	public void getEvventsForAlbum(long albumId) {
+		// TODO needs to be implemented
+	}
 
-		// SQL Query to fetch albums from database
-		SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-		queryBuilder.setTables(AlbumTrackerDatabase.VirtAlbums.ALBUMS_TABLE_NAME);
+	/**
+	 * Get a list of all albums availbale in the database
+	 */
+	public void getAlbumList() {
 
-		// Get the Database and run the query
-		SQLiteDatabase db = mDatabase.getReadableDatabase();
+		HashMap albumInventory = new HashMap<String, HashMap<String, String>>();
 
-		String asColumnsToReturn[] = { VirtAlbums.ALBUMS_TABLE_NAME + "." + VirtAlbums.ALBUM_TITLE_NAME,
-			                       	   VirtAlbums.ALBUMS_TABLE_NAME + "." + VirtAlbums.ALBUM_DESCRIPTION,
-				                       VirtAlbums.ALBUMS_TABLE_NAME + "." + VirtAlbums.ALBUM_DATE_ADDED,
-				                       VirtAlbums.ALBUMS_TABLE_NAME + "." + VirtAlbums._ID };
+		albumInventory = getAlbumListRecords();
 
-		Cursor c = queryBuilder.query(db, asColumnsToReturn, null, null, null, null, VirtAlbums.DEFAULT_SORT_ORDER);
+		Log.i(DEBUG_TAG, "About to render all recorded albums");
+		Log.i(DEBUG_TAG, albumInventory.entrySet().toString());
+
+		//Map<String, String> row = new HashMap<String, String>();
+		// HashMap <String, HashMap<String,String>>
 
 
+		for(Object id : albumInventory.keySet()) {
+			HashMap<String, String> map = (HashMap)albumInventory.get((String)id);
+			Log.i(DEBUG_TAG, map.get("album_id"));
+			Log.i(DEBUG_TAG, map.get("title_name"));
+			Log.i(DEBUG_TAG, map.get("date_added"));
+			Log.i(DEBUG_TAG, map.get("description"));
+		}
+	}
+}
+
+		/**
         // Display the results by adding some TableRows to the existing table layout
 		if(c.moveToFirst())
 		{
@@ -96,10 +121,9 @@ public class AlbumTrackerListActivity extends AlbumTrackerActivity {
 			newRow.addView(noResults);
 			petTable.addView(newRow);
 		}
-		c.close();
-		db.close();
-		
-	}
+
+		 */
+
 
 	/**
 	public void deletePet(Integer id)
@@ -112,4 +136,3 @@ public class AlbumTrackerListActivity extends AlbumTrackerActivity {
 		
 	}*/
 
-}
