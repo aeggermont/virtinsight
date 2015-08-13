@@ -75,7 +75,7 @@
                 android:text="Speech"/>
 
             <Button
-                android:id="@+id/btnIntend"
+                android:id="@+id/ButtonCapturePhoto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/carouselContainer"
@@ -87,7 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/carouselContainer"
-                android:layout_toLeftOf="@+id/btnIntend"
+                android:layout_toLeftOf="@+id/ButtonCapturePhoto"
                 android:text="Add"/>
 
         </LinearLayout>
