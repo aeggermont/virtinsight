@@ -26,6 +26,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,6 +35,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
+import android.view.MenuInflater;
+import android.view.Menu;
 
 
 public class AlbumEvent extends AlbumTrackerActivity {
@@ -77,6 +80,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
     private LinearLayout mCarouselContainer;
     private ImageView mCurrentImageView;
     private String mCurrentPhotoPath;
+    private long currentEventId;
     private int photoIndex;
     private int imageWidth;
     private static final float INITIAL_ITEMS_COUNT = 2.5F;
@@ -104,6 +108,13 @@ public class AlbumEvent extends AlbumTrackerActivity {
         return this.albumDesc;
     }
 
+    private String getSpeehText(){
+        return mTxtSpeechInput.toString();
+    }
+
+    private long getCurrentEventId(){
+        return currentEventId;
+    }
 
     // Setting Button listeners
     Button.OnClickListener mTakePicOnClickListener =
@@ -243,14 +254,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
         startActivityForResult(takePictureIntent, actionCode);
     }
 
-    /**
-     *
-     */
-    private void dispatchTakeVideoIntent() {
-        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        startActivityForResult(takeVideoIntent, ACTION_TAKE_VIDEO);
-    }
-
 
     /**
      *
@@ -259,47 +262,24 @@ public class AlbumEvent extends AlbumTrackerActivity {
 
         if (mCurrentPhotoPath != null) {
 
-            this.photoIndex +=1;
-
+            this.mCurrentImageView.setVisibility(ImageView.VISIBLE);
             Log.i(DEBUG_TAG, "About to process photo bitmap, index: " + photoIndex);
-
-            this.mCurrentImageView = new ImageView(this);
-            this.mCurrentImageView.setId(photoIndex);
 
             LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(this.imageWidth,this.imageWidth);
             this.mCurrentImageView.setLayoutParams(parms);
-            this.mCurrentImageView.setId(photoIndex);
-            //this.mCurrentImageView.setTag(100);
 
-            Log.i(DEBUG_TAG, "Photo Index:  " + photoIndex);
             BitmapProcessingTask task = new BitmapProcessingTask(mCurrentImageView);
             task.execute(mCurrentPhotoPath);
 
-            // Set the size of the image view to the previously computed value
-            //imageItem.setLayoutParams(new LinearLayout.LayoutParams(this.imageWidth, this.imageWidth));
-            this.mCurrentImageView.setFocusable(true);
-            this.mCurrentImageView.setFocusableInTouchMode(true);
-            this.mCarouselContainer.addView(mCurrentImageView);
-
-            int count = mCarouselContainer.getChildCount();
-            Log.i(DEBUG_TAG, "Current photo count: " + count);
-            
             mCurrentImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     // Getting back tagging information
-                    String mediaPath = ((Event)mCurrentImageView.getTag()).getMediaPath();
-                    long savedEventId = ((Event)mCurrentImageView.getTag()).getEventId();
-
-                    Log.i(DEBUG_TAG, "Clicking Image Path:" + mediaPath);
-                    Log.i(DEBUG_TAG, "Clicking Image Event ID: " + savedEventId);
+                    Log.i(DEBUG_TAG, "Clicking Image Path:" + getCurrentPhotoPath());
+                    Log.i(DEBUG_TAG, "Clicking Image Event ID: " + getCurrentEventId());
                 }
             });
 
-
-            //mCarouselContainer.getChildAt(count);
-            //mCarouselContainer.setNextFocusDownId(photoIndex);
             galleryAddPic();
         }
 
@@ -333,10 +313,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
         mRecordSpeech   = (Button) findViewById(R.id.ButtonRecordSpeech);
         mSaveAlbumEvent = (Button) findViewById(R.id.ButtonSaveAlbumEvent);
         mTextAlbumName = (TextView) findViewById(R.id.TextAlbumName);
-        photoIndex = 0;
-
-        // Get reference to the carousel container
-        mCarouselContainer = (LinearLayout) findViewById(R.id.photoCarousel);
+        mCurrentImageView = (ImageView) findViewById(R.id.imageContent);
 
         // Start new album or load album if already exists
         setAlbumInfo();
@@ -347,19 +324,16 @@ public class AlbumEvent extends AlbumTrackerActivity {
                 dispatchSpeechTextIntent();
             }
         });
+
+        // Saving the album
         mSaveAlbumEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(DEBUG_TAG, "Album ID: " + getAlbumId());
                 Log.i(DEBUG_TAG, "Image Path:" + getCurrentPhotoPath());
-                long eventId = addNewEvent(getAlbumId(), getCurrentPhotoPath(), mTxtSpeechInput.getText().toString());
-
-                // Tag media event
-                Event albumEvent = new Event(eventId, getCurrentPhotoPath());
-                mCurrentImageView.setTag(albumEvent);
-
-
-
+                long eventId = addNewEvent(getAlbumId(),getCurrentPhotoPath(), getSpeehText());
+                Log.i(DEBUG_TAG, "Event ID:" + eventId);
+                resetUI();
             }
         });
 
@@ -382,6 +356,43 @@ public class AlbumEvent extends AlbumTrackerActivity {
 
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_album_events, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.add_photo:
+                Log.i(DEBUG_TAG, "Taking a photo");
+                dispatchTakePictureIntent(ACTION_TAKE_PHOTO_B);
+                return true;
+            case R.id.add_text:
+                Log.i(DEBUG_TAG, "Recording Text");
+                dispatchSpeechTextIntent();
+                return true;
+            case R.id.add_event:
+                Log.i(DEBUG_TAG, "Adding a new event");
+                long eventId = addNewEvent(getAlbumId(),getCurrentPhotoPath(), getSpeehText());
+                Log.i(DEBUG_TAG, "Event ID:" + eventId);
+                resetUI();
+
+                return true;
+            case R.id.view_album:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+
+
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -433,7 +444,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
         this.mTxtSpeechInput.setText("");
         this.mTxtSpeechInput.setVisibility(EditText.INVISIBLE);
         this.mCurrentPhotoPath = null;
-        //this.mCurrentImageView.setImageBitmap(null);
+        this.mCurrentImageView.setVisibility(ImageView.INVISIBLE);
 
         Toast.makeText(getApplicationContext(),
                 getString(R.string.album_event_saved),
