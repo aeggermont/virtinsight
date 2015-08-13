@@ -11,7 +11,7 @@
     <RelativeLayout
         android:layout_width="0dip"
         android:layout_height="fill_parent"
-        android:layout_weight="0.05">
+        android:layout_weight="0.10">
 
         <TextView
             android:layout_width="wrap_content"
@@ -22,6 +22,7 @@
             android:textStyle="bold"
             android:textSize="12sp"
             android:text="@string/album_new" />
+
     </RelativeLayout>
 
 
@@ -31,54 +32,60 @@
     <RelativeLayout
         android:layout_width="0dip"
         android:layout_height="fill_parent"
-        android:layout_weight="0.80">
-
-        <!-- Container view to scroll horizontally which gives the carousel effect -->
-        <HorizontalScrollView android:layout_width="match_parent"
-            android:id="@+id/carouselContainer"
-            android:layout_height="wrap_content"
-            android:scrollbars="none">
-
-            <!-- Carousel items container - lays out items horizontally -->
-            <LinearLayout
-                android:id="@+id/photoCarousel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"/>
-
-        </HorizontalScrollView>
-
-
-        <TextView android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:id="@+id/txtSpeechInput"
-            android:layout_centerInParent="true"
-            android:textColor="#505050"
-            android:textStyle="bold"
-            android:textSize="12sp"
-            android:text="My doggie description"
-            android:layout_below="@id/carouselContainer"/>
+        android:layout_weight="0.90">
 
         <LinearLayout
+            android:id="@+id/mediaView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_centerInParent="true"
-            android:layout_below="@id/txtSpeechInput">
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:id="@+id/txtSpeechInput"
+                android:layout_centerInParent="true"
+                android:textColor="#505050"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:layout_below="@id/imageContent"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_centerInParent="true"
+                android:layout_below="@id/mediaView">
+
+
+            <Button
+                android:id="@+id/ButtonViewAlbum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/imageContent"
+                android:text="View Album"/>
 
             <Button
                 android:id="@+id/ButtonRecordSpeech"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/carouselContainer"
+                android:layout_below="@id/imageContent"
+                android:layout_toLeftOf="@+id/ButtonViewAlbum"
                 android:text="Speech"/>
 
             <Button
                 android:id="@+id/ButtonCapturePhoto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/carouselContainer"
+                android:layout_below="@id/imageContent"
                 android:layout_toLeftOf="@+id/ButtonRecordSpeech"
                 android:text="Photo"/>
 
@@ -86,14 +93,12 @@
                 android:id="@+id/ButtonSaveAlbumEvent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/carouselContainer"
+                android:layout_below="@id/imageContent"
                 android:layout_toLeftOf="@+id/ButtonCapturePhoto"
                 android:text="Add"/>
 
         </LinearLayout>
-
     </RelativeLayout>
-
 
     <!--
         This layout uses 15% of the screen on the right
@@ -101,6 +106,6 @@
     <RelativeLayout
         android:layout_width="0dip"
         android:layout_height="fill_parent"
-        android:layout_weight="0.05">
+        android:layout_weight="0.10">
     </RelativeLayout>
 </LinearLayout>
