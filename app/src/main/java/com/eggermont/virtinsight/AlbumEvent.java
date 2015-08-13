@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import android.app.usage.UsageEvents;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -85,29 +87,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
     private String albumDesc;
 
 
-    Button.OnClickListener mTakePicOnClickListener =
-            new Button.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dispatchTakePictureIntent(ACTION_TAKE_PHOTO_B);
-                }
-            };
-
-    Button.OnClickListener mTakePicSOnClickListener =
-            new Button.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dispatchTakePictureIntent(ACTION_TAKE_PHOTO_S);
-                }
-            };
-
-    Button.OnClickListener mTakeVidOnClickListener =
-            new Button.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dispatchTakeVideoIntent();
-                }
-            };
 
     private String getCurrentPhotoPath(){
         return mCurrentPhotoPath;
@@ -117,7 +96,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
         return albumId;
     }
 
-    /* Photo album for this application */
     private String getAlbumName() {
         return this.albumName;
     }
@@ -127,6 +105,16 @@ public class AlbumEvent extends AlbumTrackerActivity {
     }
 
 
+    // Setting Button listeners
+    Button.OnClickListener mTakePicOnClickListener =
+            new Button.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dispatchTakePictureIntent(ACTION_TAKE_PHOTO_B);
+                }
+            };
+
+
     /**
      * This method is called when a new album is created
      * and an album name and description have been set
@@ -134,9 +122,12 @@ public class AlbumEvent extends AlbumTrackerActivity {
     private void setAlbumInfo(){
 
         // Getting album info from previous activity
-        Intent albumInt = getIntent();
-        String albumName = albumInt.getExtras().getString("albumName");
-        String albumDesc = albumInt.getExtras().getString("albumDesc");
+        //Intent albumInt = getIntent();
+        //String albumName = albumInt.getExtras().getString("albumName");
+        //String albumDesc = albumInt.getExtras().getString("albumDesc");
+
+        String albumName = "Test";
+        String albumDesc = "Test Description";
 
         Log.i(DEBUG_TAG, "Album name: " + albumName);
         Log.i(DEBUG_TAG, "Album description: " + albumDesc);
@@ -264,7 +255,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
     /**
      *
      */
-    private void handleBigCameraPhoto() {
+    private void handleCameraPhoto() {
 
         if (mCurrentPhotoPath != null) {
 
@@ -292,13 +283,17 @@ public class AlbumEvent extends AlbumTrackerActivity {
 
             int count = mCarouselContainer.getChildCount();
             Log.i(DEBUG_TAG, "Current photo count: " + count);
-
+            
             mCurrentImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.i(DEBUG_TAG, ">> Clicking : " + view.getId());
-                    Log.i(DEBUG_TAG, ">> Resources : " + view.getResources());
-                    Log.i(DEBUG_TAG, ">> Path : " + view.getTag());
+
+                    // Getting back tagging information
+                    String mediaPath = ((Event)mCurrentImageView.getTag()).getMediaPath();
+                    long savedEventId = ((Event)mCurrentImageView.getTag()).getEventId();
+
+                    Log.i(DEBUG_TAG, "Clicking Image Path:" + mediaPath);
+                    Log.i(DEBUG_TAG, "Clicking Image Event ID: " + savedEventId);
                 }
             });
 
@@ -323,11 +318,15 @@ public class AlbumEvent extends AlbumTrackerActivity {
 
 
 
-    /** Called when the activity is first created. */
+    /**
+     *
+     * Called when the activity is first created.
+     *
+     * */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_album_events)
+        setContentView(R.layout.activity_album_events);
 
         // Set widget references
         mTxtSpeechInput = (TextView) findViewById(R.id.txtSpeechInput);
@@ -353,7 +352,14 @@ public class AlbumEvent extends AlbumTrackerActivity {
             public void onClick(View v) {
                 Log.i(DEBUG_TAG, "Album ID: " + getAlbumId());
                 Log.i(DEBUG_TAG, "Image Path:" + getCurrentPhotoPath());
-                addNewEvent(getAlbumId(), getCurrentPhotoPath(),mTxtSpeechInput.getText().toString());
+                long eventId = addNewEvent(getAlbumId(), getCurrentPhotoPath(), mTxtSpeechInput.getText().toString());
+
+                // Tag media event
+                Event albumEvent = new Event(eventId, getCurrentPhotoPath());
+                mCurrentImageView.setTag(albumEvent);
+
+
+
             }
         });
 
@@ -361,7 +367,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
         // TODO: Needs to be refactored
         mImageBitmap = null;
 
-        Button picBtn = (Button) findViewById(R.id.btnIntend);
+        Button picBtn = (Button) findViewById(R.id.ButtonCapturePhoto);
         setBtnListenerOrDisable(
                 picBtn,
                 mTakePicOnClickListener,
@@ -373,6 +379,8 @@ public class AlbumEvent extends AlbumTrackerActivity {
         } else {
             mAlbumStorageDirFactory = new BaseAlbumDirFactory();
         }
+
+
     }
 
     @Override
@@ -402,7 +410,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
         switch (requestCode) {
             case ACTION_TAKE_PHOTO_B: {
                 if (resultCode == RESULT_OK) {
-                    handleBigCameraPhoto();
+                    handleCameraPhoto();
                 }
                 break;
             } // ACTION_TAKE_PHOTO_B
@@ -431,6 +439,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
                 getString(R.string.album_event_saved),
                 Toast.LENGTH_SHORT).show();
     }
+
 
     // Some lifecycle callbacks so that the image can survive orientation change
     @Override
