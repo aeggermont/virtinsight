@@ -1,17 +1,48 @@
 package com.eggermont.virtinsight;
 
-import android.support.v7.app.ActionBarActivity;
+import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.content.Intent;
+
+import java.util.HashMap;
+import java.util.TreeMap;
 
 
-public class AlbumViewer extends ActionBarActivity {
+/**
+ *  This class is used to view stored albums and their contents. This
+ *  class extends the AlbumTrackerActivity to interact with the SQLite
+ *  database keeping track of stored media for the different albums.
+ *
+ */
+
+
+public class AlbumViewer extends AlbumTrackerActivity {
+
+
+    private static final String DEBUG_TAG = AlbumViewer.class.getCanonicalName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album_viewer);
+
+        Intent albumInt = getIntent();
+        TreeMap<Integer, HashMap<String, String>> albumEvents;
+
+        String albumName = albumInt.getExtras().getString("albumName");
+        long albumId = albumInt.getExtras().getLong("albumId");
+        Log.i(DEBUG_TAG, "Just got intent: " + albumId + " : " + albumName);
+
+        albumEvents =  getEventsForAlbum(9);
+
+        Log.i(DEBUG_TAG, "Events: " +  albumEvents.toString());
+
+        //Log.i(DEBUG_TAG, "First Event: " + albumEvents.firstKey().toString());
+        //Log.i(DEBUG_TAG, "Last Event: " +  albumEvents.lastEntry().toString());
+
     }
 
     @Override
