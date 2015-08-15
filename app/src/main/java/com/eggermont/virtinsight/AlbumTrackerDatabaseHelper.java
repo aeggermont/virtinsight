@@ -11,11 +11,11 @@ import android.util.Log;
 
 /**
  *  This class handles the creation of tables in the database
- *
  */
 
 class AlbumTrackerDatabaseHelper extends SQLiteOpenHelper {
 
+	// TODO: Data base name needs to be changed
 	private static final String DATABASE_NAME = "pet_tracker.db";
 	private static final int DATABASE_VERSION = 1;
 	private SQLiteDatabase db;
@@ -55,17 +55,13 @@ class AlbumTrackerDatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// Housekeeping here.
-		// Implement how "move" your application data during an upgrade of
-		// schema versions
-		// There is no ALTER TABLE command in SQLite, so this generally involves
-		// CREATING a new table, moving data if possible, or deleting the old
-		// data and starting fresh
-		// Your call.
+
 	}
 
 	@Override
 	public void onOpen(SQLiteDatabase db) {
 		super.onOpen(db);
 	}
+
+
 }
