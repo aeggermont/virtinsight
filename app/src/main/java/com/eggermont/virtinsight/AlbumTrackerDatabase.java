@@ -21,7 +21,7 @@ public final class AlbumTrackerDatabase {
 		public static final String ALBUM_TITLE_NAME = "tbl_album_title";
 		public static final String ALBUM_DESCRIPTION = "tbl_album_description";
 		public static final String ALBUM_DATE_ADDED = "tbl_album_dateadded";
-		public static final String DEFAULT_SORT_ORDER = "tbl_album_title ASC";
+		public static final String DEFAULT_SORT_ORDER = "tbl_album_title DESC";
 
 	}
 
