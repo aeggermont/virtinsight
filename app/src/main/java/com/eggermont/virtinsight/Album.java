@@ -1,8 +1,7 @@
 package com.eggermont.virtinsight;
 
 /**
- *  This is the entry class to create and view
- *  albums.
+ *  This is the entry class to create a bew Album
  */
 
 import android.content.Intent;
@@ -66,10 +65,14 @@ public class Album extends AlbumTrackerActivity {
         final EditText albumName = (EditText) findViewById(R.id.EditTextAlbumName);
         final EditText albumDesc = (EditText) findViewById(R.id.EditAlbumDescription);
 
+        long albumId = saveAlbum(albumName.getText().toString(), albumDesc.getText().toString());
+
         Log.i(DEBUG_TAG, "Starting AlbumEvents Activity ...  ");
         Intent intent = new Intent(Album.this, AlbumEvent.class);
         intent.putExtra("albumName", albumName.getText().toString());
         intent.putExtra("albumDesc", albumDesc.getText().toString());
+        intent.putExtra("albumId", albumId);
+
         startActivity(intent);
 
     }
