@@ -1,15 +1,20 @@
 package com.eggermont.virtinsight;
 
-import android.app.Activity;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.content.Intent;
-
+import android.widget.GridView;
 import java.util.HashMap;
 import java.util.TreeMap;
+
+import android.widget.AdapterView;
+import android.view.View;
+import android.app.Activity;
+import android.widget.Toast;
 
 
 /**
@@ -46,11 +51,23 @@ public class AlbumViewer extends AlbumTrackerActivity {
 
         Log.i(DEBUG_TAG, "Just got intent: " + albumId + " : " + albumName);
 
-
         // Get events from database
         albumEvents =  getEventsForAlbum(albumId);
-
         Log.i(DEBUG_TAG, "Events: " +  albumEvents.toString());
+
+
+        GridView mGridView = (GridView) findViewById(R.id.gridViewPhotos);
+        mGridView.setAdapter(new ImageAdapter(this));
+
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(AlbumViewer.this, "" + position,
+                        Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
 
         //Log.i(DEBUG_TAG, "First Event: " + albumEvents.firstKey().toString());
         //Log.i(DEBUG_TAG, "Last Event: " +  albumEvents.lastEntry().toString());
