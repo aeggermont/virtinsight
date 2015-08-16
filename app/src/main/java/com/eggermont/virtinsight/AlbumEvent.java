@@ -44,6 +44,14 @@ public class AlbumEvent extends AlbumTrackerActivity {
     private static final String DEBUG_TAG = AlbumEvent.class.getCanonicalName();
 
 
+    /**
+     * Album Settings
+     */
+    private long albumId;
+    private String albumName;
+    private String albumDesc;
+
+
     // Call back ids
     private static final int ACTION_TAKE_PHOTO_B = 1;
     private static final int ACTION_TAKE_PHOTO_S = 2;
@@ -85,10 +93,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
     private int imageWidth;
     private static final float INITIAL_ITEMS_COUNT = 2.5F;
 
-    // Album settings
-    private long albumId;
-    private String albumName;
-    private String albumDesc;
+
 
 
 
@@ -132,25 +137,23 @@ public class AlbumEvent extends AlbumTrackerActivity {
      */
     private void setAlbumInfo(){
 
-        // Getting album info from previous activity
-        //Intent albumInt = getIntent();
-        //String albumName = albumInt.getExtras().getString("albumName");
-        //String albumDesc = albumInt.getExtras().getString("albumDesc");
+        //TODO: Refactor code to avoid extra variables
 
-        String albumName = "Test";
-        String albumDesc = "Test Description";
+        Intent albumInt = getIntent();
+        String albumName = albumInt.getExtras().getString("albumName");
+        String albumDesc = albumInt.getExtras().getString("albumDesc");
+        long albumId = albumInt.getExtras().getLong("albumId");
 
+        Log.i(DEBUG_TAG, "Album ID: " + albumId);
         Log.i(DEBUG_TAG, "Album name: " + albumName);
         Log.i(DEBUG_TAG, "Album description: " + albumDesc);
 
         this.albumName = albumName;
         this.albumDesc = albumDesc;
+        this.albumId = albumId;
 
         // Update UI
         mTextAlbumName.setText(this.albumName);
-
-        // Creating album in database
-        saveAlbum(albumName, albumDesc);
     }
 
 
@@ -381,8 +384,14 @@ public class AlbumEvent extends AlbumTrackerActivity {
                 long eventId = addNewEvent(getAlbumId(),getCurrentPhotoPath(), getSpeehText());
                 Log.i(DEBUG_TAG, "Event ID:" + eventId);
                 resetUI();
-
                 return true;
+
+            case  R.id.home:
+                Log.i(DEBUG_TAG, "Returning to main menu");
+                Intent home = new Intent(AlbumEvent.this, AlbumInventoryActivity.class);
+                super.onDestroy();
+                startActivity(home);
+
             case R.id.view_album:
                 return true;
             default:
