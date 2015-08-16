@@ -96,8 +96,9 @@ public class BitmapProcessingTask extends AsyncTask<String, Void, Bitmap> {
         final ImageView imageView = imageViewReference.get();
 
 		/* Get the size of the ImageView */
-        int targetPhotoWidth = imageView.getWidth();
-        int targetPhotoHeight = imageView.getHeight();
+        // TODO: These settings are not getting inherited from AlbumEvent so hardcoding for now
+        int targetPhotoWidth = 548;
+        int targetPhotoHeight = 548;
 
         int scaleFactor;
 
