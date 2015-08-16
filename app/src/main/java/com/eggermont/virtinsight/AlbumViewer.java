@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.content.Intent;
 
@@ -24,6 +25,13 @@ public class AlbumViewer extends AlbumTrackerActivity {
 
     private static final String DEBUG_TAG = AlbumViewer.class.getCanonicalName();
 
+    /**
+     * Album Settings
+     */
+    private long albumId;
+    private String albumName;
+    private String albumDesc;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,11 +40,15 @@ public class AlbumViewer extends AlbumTrackerActivity {
         Intent albumInt = getIntent();
         TreeMap<Integer, HashMap<String, String>> albumEvents;
 
-        String albumName = albumInt.getExtras().getString("albumName");
-        long albumId = albumInt.getExtras().getLong("albumId");
+        this.albumName = albumInt.getExtras().getString("albumName");
+        this.albumId = albumInt.getExtras().getLong("albumId");
+        this.albumDesc = albumInt.getExtras().getString("albumDesc");
+
         Log.i(DEBUG_TAG, "Just got intent: " + albumId + " : " + albumName);
 
-        albumEvents =  getEventsForAlbum(9);
+
+        // Get events from database
+        albumEvents =  getEventsForAlbum(albumId);
 
         Log.i(DEBUG_TAG, "Events: " +  albumEvents.toString());
 
@@ -45,25 +57,37 @@ public class AlbumViewer extends AlbumTrackerActivity {
 
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_album_viewer, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_album_viewer, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.add_event:
+                Log.i(DEBUG_TAG, "Adding a new event");
+                Intent events = new Intent(AlbumViewer.this, AlbumEvent.class);
+                events.putExtra("albumId", this.albumId);
+                events.putExtra("albumName", this.albumName);
+                events.putExtra("albumDesc", this.albumDesc);
+                super.onDestroy();
+                return true;
+
+            case  R.id.home:
+                Log.i(DEBUG_TAG, "Returning to main menu");
+                Intent home = new Intent(AlbumViewer.this, AlbumInventoryActivity.class);
+                super.onDestroy();
+                startActivity(home);
+
+            case R.id.view_album:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }
