@@ -1,7 +1,14 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.eggermont.virtinsight.AlbumEvents">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/add_photo"
+        android:title="Add Photo"
+        android:showAsAction="ifRoom"/>
+    <item android:id="@+id/add_text"
+        android:title="Add Text/Speech" />
+    <item android:id="@+id/add_event"
+        android:title="Add Event" />
+    <item android:id="@+id/view_album"
+        android:title="View Album EVents" />
+    <item android:id="@+id/home"
+        android:title="Home" />
 </menu>
