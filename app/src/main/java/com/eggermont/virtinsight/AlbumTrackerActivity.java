@@ -51,7 +51,12 @@ public class AlbumTrackerActivity extends Activity {
 
 		Date today = new Date(System.currentTimeMillis());
 
-		SQLiteDatabase db = mDatabase.getWritableDatabase();
+		Log.i(DEBUG_TAG, "Saving Event: "
+				+ " Album ID: " +  albumId
+				+ " currentPhotoPath: " + currentPhotoPath
+				+ " description: " + txtSpeechInput);
+
+				SQLiteDatabase db = mDatabase.getWritableDatabase();
 		long eventId = 0;
 		db.beginTransaction();
 
@@ -201,10 +206,10 @@ public class AlbumTrackerActivity extends Activity {
 								allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums._ID))),
 						record);
 
-				Log.i(DEBUG_TAG, "ID " + allRows.getInt(allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums._ID)));
-				Log.i(DEBUG_TAG, allRows.getString(allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums.ALBUM_TITLE_NAME)));
-				Log.i(DEBUG_TAG, allRows.getString(allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums.ALBUM_DATE_ADDED)));
-				Log.i(DEBUG_TAG, allRows.getString(allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums.ALBUM_DESCRIPTION)));
+				//Log.i(DEBUG_TAG, "ID " + allRows.getInt(allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums._ID)));
+				//Log.i(DEBUG_TAG, allRows.getString(allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums.ALBUM_TITLE_NAME)));
+				//Log.i(DEBUG_TAG, allRows.getString(allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums.ALBUM_DATE_ADDED)));
+				//Log.i(DEBUG_TAG, allRows.getString(allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums.ALBUM_DESCRIPTION)));
 
 			} while (allRows.moveToNext());
 		}
@@ -223,7 +228,7 @@ public class AlbumTrackerActivity extends Activity {
 	 * @param albumName
 	 * @param albumDesc
 	 */
-	public void saveAlbum(String albumName, String albumDesc){
+	public long saveAlbum(String albumName, String albumDesc){
 
 		Date today = new Date(System.currentTimeMillis());
 		long albumId = 0;
@@ -250,6 +255,8 @@ public class AlbumTrackerActivity extends Activity {
 		}
 
 		db.close();
+
+		return albumId;
 	}
 
 
