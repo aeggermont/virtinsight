@@ -1,5 +1,8 @@
 package com.eggermont.virtinsight;
 
+/**
+ *
+ */
 public class Event {
 
     private String mediaPath;
@@ -8,8 +11,8 @@ public class Event {
     private int targetHeight;
 
     public Event(long eventId, String mediaPath){
-        this.eventId = eventId;
         this.mediaPath = mediaPath;
+        this.eventId = eventId;
     }
 
     public void setMediaPath(String path){
@@ -31,6 +34,11 @@ public class Event {
 
     public String getMediaPath(){
         return this.mediaPath;
+    }
+
+    @Override
+    public String toString(){
+        return String.format("ID: " + this.eventId + " : " + this.mediaPath);
     }
 
 }
