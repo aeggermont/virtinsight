@@ -32,15 +32,22 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 import android.view.MenuInflater;
 import android.view.Menu;
+import android.content.ServiceConnection;
+import android.os.IBinder;
+import android.content.ComponentName;
+import android.os.Binder;
 
+/**
+ *
+ *  TODO class description to be added here
+ *
+ */
 
 public class AlbumEvent extends AlbumTrackerActivity {
 
     private static final String DEBUG_TAG = AlbumEvent.class.getCanonicalName();
-
 
     /**
      * Album Settings
@@ -51,38 +58,34 @@ public class AlbumEvent extends AlbumTrackerActivity {
 
 
     // Call back ids
-    private static final int ACTION_TAKE_PHOTO_B = 1;
-    private static final int ACTION_TAKE_PHOTO_S = 2;
-    private static final int ACTION_TAKE_VIDEO = 3;
+    private static final int ACTION_TAKE_PHOTO = 1;
     private static final int ACTION_CAPTURE_TEXT = 4;
 
 
-    // Configuration settings
+    // Configuration settings for image content
     private static final String BITMAP_STORAGE_KEY = "viewAlbumBitmap";
     private static final String IMAGEVIEW_VISIBILITY_STORAGE_KEY = "imagealbumviewvisibility";
-
-    private static final String VIDEO_STORAGE_KEY = "viewvideo";
-    private static final String VIDEOVIEW_VISIBILITY_STORAGE_KEY = "videoviewvisibility";
-    private VideoView mVideoView;
-
     private static final String JPEG_FILE_PREFIX = "IMG_";
     private static final String JPEG_FILE_SUFFIX = ".jpg";
-
     private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
 
+
+    // Service references
+    GeolocationService mGeoService;
+    boolean mBound = false;
+
+    // UI widget references
     private TextView mEditText;
     private Bitmap mImageBitmap;
     private Button mRecordSpeech;
     private Button mSaveAlbumEvent;
-
     private TextView mTxtSpeechInput;
     private TextView mTextAlbumName;
-
-
-
-    //Photo  carousel settings
     private LinearLayout mCarouselContainer;
     private ImageView mCurrentImageView;
+
+
+    // Key variables used in UI worflow
     private String mCurrentPhotoPath;
     private long currentEventId;
     private int photoIndex;
@@ -90,29 +93,205 @@ public class AlbumEvent extends AlbumTrackerActivity {
     private static final float INITIAL_ITEMS_COUNT = 2.5F;
 
 
+    // Getters and setters
     private String getCurrentPhotoPath(){
         return mCurrentPhotoPath;
     }
-
     private long getAlbumId(){
         return albumId;
     }
-
     private String getAlbumName() {
         return this.albumName;
     }
-
     private String getAlbumDescription(){
         return this.albumDesc;
     }
-
     private String getSpeehText(){
         return mTxtSpeechInput.getText().toString();
     }
-
     private long getCurrentEventId(){
         return currentEventId;
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_album_events);
+
+        // Set widget references
+        mTxtSpeechInput = (TextView) findViewById(R.id.txtSpeechInput);
+        mRecordSpeech   = (Button) findViewById(R.id.ButtonRecordSpeech);
+        mSaveAlbumEvent = (Button) findViewById(R.id.ButtonSaveAlbumEvent);
+        mTextAlbumName = (TextView) findViewById(R.id.TextAlbumName);
+        mCurrentImageView = (ImageView) findViewById(R.id.imageContent);
+        mImageBitmap = null;
+
+        // Start new album or load album if already exists
+        setAlbumInfo();
+
+        mRecordSpeech.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dispatchSpeechTextIntent();
+            }
+        });
+
+        // Saving the album
+        mSaveAlbumEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(DEBUG_TAG, "Album ID: " + getAlbumId());
+                Log.i(DEBUG_TAG, "Image Path:" + getCurrentPhotoPath());
+
+                // Attempt to get geolocation information
+                Log.i(DEBUG_TAG, "Callback from Geolocation Service:" + mGeoService.getRandomNumber());
+
+                long eventId = addNewEvent(getAlbumId(),getCurrentPhotoPath(), getSpeehText());
+                Log.i(DEBUG_TAG, "Event ID:" + eventId);
+                resetUI();
+            }
+        });
+
+
+        // TODO: Needs to be refactored
+        Button picBtn = (Button) findViewById(R.id.ButtonCapturePhoto);
+        setBtnListenerOrDisable(
+                picBtn,
+                mTakePicOnClickListener,
+                MediaStore.ACTION_IMAGE_CAPTURE
+        );
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+            mAlbumStorageDirFactory = new FroyoAlbumDirFactory();
+        } else {
+            mAlbumStorageDirFactory = new BaseAlbumDirFactory();
+        }
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+
+        Log.i(DEBUG_TAG , "About to bind geolocation service");
+        // Bind to GeolocationService
+        Intent intent = new Intent(this, GeolocationService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+
+    @Override
+    protected void onStop(){
+        super.onStop();;
+
+        // Unbind the GeolocationService service
+        if(mBound){
+            unbindService(mConnection);
+            mBound = false;
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_album_events, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.add_photo:
+                Log.i(DEBUG_TAG, "Taking a photo");
+                dispatchTakePictureIntent(ACTION_TAKE_PHOTO);
+                return true;
+            case R.id.add_text:
+                Log.i(DEBUG_TAG, "Recording Text");
+                dispatchSpeechTextIntent();
+                return true;
+            case R.id.add_event:
+                Log.i(DEBUG_TAG, "Adding a new event");
+                long eventId = addNewEvent(getAlbumId(),getCurrentPhotoPath(), getSpeehText());
+                Log.i(DEBUG_TAG, "Event ID:" + eventId);
+                resetUI();
+                return true;
+            case  R.id.home:
+                Log.i(DEBUG_TAG, "Returning to main menu");
+                Intent home = new Intent(AlbumEvent.this, AlbumInventoryActivity.class);
+                super.onDestroy();
+                startActivity(home);
+            case R.id.view_album:
+                Log.i(DEBUG_TAG, "View current album");
+                Intent intent = new Intent(AlbumEvent.this, AlbumViewer.class);
+                intent.putExtra("albumName", getAlbumName());
+                intent.putExtra("albumDesc", getAlbumDescription());
+                intent.putExtra("albumId", getAlbumId());
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+
+    @Override
+    protected void onDestroy(){
+        mCarouselContainer = null;
+        mCurrentImageView = null;
+    }
+
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        // Compute the width of a carousel item based on the screen width and number of initial items.
+        final DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        this.imageWidth = (int) (displayMetrics.widthPixels / INITIAL_ITEMS_COUNT);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case ACTION_TAKE_PHOTO: {
+                if (resultCode == RESULT_OK) {
+                    handleCameraPhoto();
+                }
+                break;
+            } // ACTION_TAKE_PHOTO
+
+            case ACTION_CAPTURE_TEXT: {
+                if ( resultCode == RESULT_OK ){
+                    Log.i(DEBUG_TAG, "About to handle text");
+                    handleCapturedText(data);
+                }
+                break;
+            } // ACTION_CAPTURE_TEXT
+        } // switch
+    }
+
+
+    /**
+     * This method defines callbacks for service binding which
+     * are passed to bindService()
+     * */
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            GeolocationService.LocalBinder binder = (GeolocationService.LocalBinder) service;
+            mGeoService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
 
 
 
@@ -122,7 +301,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
             new Button.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dispatchTakePictureIntent(ACTION_TAKE_PHOTO_B);
+                    dispatchTakePictureIntent(ACTION_TAKE_PHOTO);
                 }
             };
 
@@ -176,6 +355,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
         return storageDir;
     }
 
+
     /**
      * Creates a temporary image file to be used to store
      * a photo taken from the camera component
@@ -202,7 +382,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
         File f = createImageFile();
         this.mCurrentPhotoPath = f.getAbsolutePath();
         Log.i(DEBUG_TAG, "Current photo path: " + mCurrentPhotoPath);
-
         return f;
     }
 
@@ -218,45 +397,52 @@ public class AlbumEvent extends AlbumTrackerActivity {
         this.sendBroadcast(mediaScanIntent);
     }
 
+
+    // Intent dispatchers
+
     /**
-     *
-     * @param actionCode
+     *  This method launches the SpeechTest activity to add edit
+     *  text descriptions to the album
+     */
+    public void dispatchSpeechTextIntent(){
+        Intent intent = new Intent(AlbumEvent.this, SpeechText.class);
+        intent.putExtra("albumName", getAlbumName());
+        intent.putExtra("albumDesc", getAlbumDescription());
+        startActivityForResult(intent, ACTION_CAPTURE_TEXT);
+    }
+
+    /**
+     * TODO Add comments
      */
     private void dispatchTakePictureIntent(int actionCode) {
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File fileIn = null;
 
-        switch(actionCode) {
-            case ACTION_TAKE_PHOTO_B:
-                File f = null;
-
-                try {
-                    f = setUpPhotoFile();
-                    mCurrentPhotoPath = f.getAbsolutePath();
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    f = null;
-                    mCurrentPhotoPath = null;
-                }
-                break;
-
-            default:
-                break;
+        try {
+            fileIn = setUpPhotoFile();
+            mCurrentPhotoPath = fileIn.getAbsolutePath();
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(fileIn));
+        } catch (IOException e) {
+            e.printStackTrace();
+            fileIn = null;
+            mCurrentPhotoPath = null;
         }
 
+        // TODO: startActivityForResult should be started only if file was created. Needs to be moved to the try block above
         Log.i(DEBUG_TAG, ">> Path for media file: " + mCurrentPhotoPath.toString());
         startActivityForResult(takePictureIntent, actionCode);
     }
 
 
+    // Handling intents dispatched
+
     /**
-     *
+     * TODO Add comments
      */
     private void handleCameraPhoto() {
 
         if (mCurrentPhotoPath != null) {
-
             this.mCurrentImageView.setVisibility(ImageView.VISIBLE);
             Log.i(DEBUG_TAG, "About to process photo bitmap, index: " + photoIndex);
 
@@ -277,7 +463,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
 
             galleryAddPic();
         }
-
     }
 
 
@@ -294,162 +479,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
 
 
     /**
-     *
-     * Called when the activity is first created.
-     *
-     * */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_album_events);
-
-        // Set widget references
-        mTxtSpeechInput = (TextView) findViewById(R.id.txtSpeechInput);
-        mRecordSpeech   = (Button) findViewById(R.id.ButtonRecordSpeech);
-        mSaveAlbumEvent = (Button) findViewById(R.id.ButtonSaveAlbumEvent);
-        mTextAlbumName = (TextView) findViewById(R.id.TextAlbumName);
-        mCurrentImageView = (ImageView) findViewById(R.id.imageContent);
-
-        // Start new album or load album if already exists
-        setAlbumInfo();
-
-        mRecordSpeech.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dispatchSpeechTextIntent();
-            }
-        });
-
-        // Saving the album
-        mSaveAlbumEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(DEBUG_TAG, "Album ID: " + getAlbumId());
-                Log.i(DEBUG_TAG, "Image Path:" + getCurrentPhotoPath());
-                long eventId = addNewEvent(getAlbumId(),getCurrentPhotoPath(), getSpeehText());
-                Log.i(DEBUG_TAG, "Event ID:" + eventId);
-                resetUI();
-            }
-        });
-
-
-        // TODO: Needs to be refactored
-        mImageBitmap = null;
-
-        Button picBtn = (Button) findViewById(R.id.ButtonCapturePhoto);
-        setBtnListenerOrDisable(
-                picBtn,
-                mTakePicOnClickListener,
-                MediaStore.ACTION_IMAGE_CAPTURE
-        );
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
-            mAlbumStorageDirFactory = new FroyoAlbumDirFactory();
-        } else {
-            mAlbumStorageDirFactory = new BaseAlbumDirFactory();
-        }
-
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_album_events, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.add_photo:
-                Log.i(DEBUG_TAG, "Taking a photo");
-                dispatchTakePictureIntent(ACTION_TAKE_PHOTO_B);
-                return true;
-            case R.id.add_text:
-                Log.i(DEBUG_TAG, "Recording Text");
-                dispatchSpeechTextIntent();
-                return true;
-            case R.id.add_event:
-                Log.i(DEBUG_TAG, "Adding a new event");
-                long eventId = addNewEvent(getAlbumId(),getCurrentPhotoPath(), getSpeehText());
-                Log.i(DEBUG_TAG, "Event ID:" + eventId);
-                resetUI();
-                return true;
-
-            case  R.id.home:
-                Log.i(DEBUG_TAG, "Returning to main menu");
-                Intent home = new Intent(AlbumEvent.this, AlbumInventoryActivity.class);
-                super.onDestroy();
-                startActivity(home);
-
-            case R.id.view_album:
-                Log.i(DEBUG_TAG, "View current album");
-                Intent intent = new Intent(AlbumEvent.this, AlbumViewer.class);
-                intent.putExtra("albumName", getAlbumName());
-                intent.putExtra("albumDesc", getAlbumDescription());
-                intent.putExtra("albumId", getAlbumId());
-                startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-
-
-    @Override
-    protected void onDestroy(){
-        mCarouselContainer = null;
-        mCurrentImageView = null;
-    }
-
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-
-        // Compute the width of a carousel item based on the screen width and number of initial items.
-        final DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        this.imageWidth = (int) (displayMetrics.widthPixels / INITIAL_ITEMS_COUNT);
-
-    }
-
-    /**
-     *  This method launches the SpeechTest activity to add edit
-     *  text descriptions to the album
-     */
-    public void dispatchSpeechTextIntent(){
-        Intent intent = new Intent(AlbumEvent.this, SpeechText.class);
-        intent.putExtra("albumName", getAlbumName());
-        intent.putExtra("albumDesc", getAlbumDescription());
-        startActivityForResult(intent, ACTION_CAPTURE_TEXT);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case ACTION_TAKE_PHOTO_B: {
-                if (resultCode == RESULT_OK) {
-                    handleCameraPhoto();
-                }
-                break;
-            } // ACTION_TAKE_PHOTO_B
-
-            case ACTION_CAPTURE_TEXT: {
-                if ( resultCode == RESULT_OK ){
-                    Log.i(DEBUG_TAG, "About to handle text");
-                    handleCapturedText(data);
-                }
-                break;
-            } // ACTION_CAPTURE_TEXT
-        } // switch
-    }
-
-
-    /**
      *  Rest all widgets in the UI to record a new album event
      */
     private void resetUI(){
@@ -463,6 +492,9 @@ public class AlbumEvent extends AlbumTrackerActivity {
                 Toast.LENGTH_SHORT).show();
     }
 
+
+
+    // TODO The following metods need refactoring
 
     // Some lifecycle callbacks so that the image can survive orientation change
     @Override
