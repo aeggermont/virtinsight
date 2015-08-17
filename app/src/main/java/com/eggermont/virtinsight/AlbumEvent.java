@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-import android.app.usage.UsageEvents;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -67,8 +65,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
     private static final String VIDEOVIEW_VISIBILITY_STORAGE_KEY = "videoviewvisibility";
     private VideoView mVideoView;
 
-    private Uri mVideoUri;
-
     private static final String JPEG_FILE_PREFIX = "IMG_";
     private static final String JPEG_FILE_SUFFIX = ".jpg";
 
@@ -94,9 +90,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
     private static final float INITIAL_ITEMS_COUNT = 2.5F;
 
 
-
-
-
     private String getCurrentPhotoPath(){
         return mCurrentPhotoPath;
     }
@@ -114,12 +107,15 @@ public class AlbumEvent extends AlbumTrackerActivity {
     }
 
     private String getSpeehText(){
-        return mTxtSpeechInput.toString();
+        return mTxtSpeechInput.getText().toString();
     }
 
     private long getCurrentEventId(){
         return currentEventId;
     }
+
+
+
 
     // Setting Button listeners
     Button.OnClickListener mTakePicOnClickListener =
@@ -157,10 +153,6 @@ public class AlbumEvent extends AlbumTrackerActivity {
     }
 
 
-    /**
-     * This method creates a directory in the appropriate directory location
-     * on the device.
-     */
     private File getAlbumDir() {
 
         File storageDir = null;
@@ -393,6 +385,12 @@ public class AlbumEvent extends AlbumTrackerActivity {
                 startActivity(home);
 
             case R.id.view_album:
+                Log.i(DEBUG_TAG, "View current album");
+                Intent intent = new Intent(AlbumEvent.this, AlbumViewer.class);
+                intent.putExtra("albumName", getAlbumName());
+                intent.putExtra("albumDesc", getAlbumDescription());
+                intent.putExtra("albumId", getAlbumId());
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -401,6 +399,11 @@ public class AlbumEvent extends AlbumTrackerActivity {
 
 
 
+    @Override
+    protected void onDestroy(){
+        mCarouselContainer = null;
+        mCurrentImageView = null;
+    }
 
 
     @Override
@@ -465,9 +468,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(BITMAP_STORAGE_KEY, mImageBitmap);
-        outState.putParcelable(VIDEO_STORAGE_KEY, mVideoUri);
         outState.putBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY, (mImageBitmap != null));
-        outState.putBoolean(VIDEOVIEW_VISIBILITY_STORAGE_KEY, (mVideoUri != null));
         super.onSaveInstanceState(outState);
     }
 
@@ -475,18 +476,11 @@ public class AlbumEvent extends AlbumTrackerActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mImageBitmap = savedInstanceState.getParcelable(BITMAP_STORAGE_KEY);
-        mVideoUri = savedInstanceState.getParcelable(VIDEO_STORAGE_KEY);
         mCurrentImageView.setImageBitmap(mImageBitmap);
         mCurrentImageView.setVisibility(
                 savedInstanceState.getBoolean(IMAGEVIEW_VISIBILITY_STORAGE_KEY) ?
                         ImageView.VISIBLE : ImageView.INVISIBLE
         );
-
-        //mVideoView.setVideoURI(mVideoUri);
-        //mVideoView.setVisibility(
-        //        savedInstanceState.getBoolean(VIDEOVIEW_VISIBILITY_STORAGE_KEY) ?
-        //                ImageView.VISIBLE : ImageView.INVISIBLE
-        //);
     }
 
     /**
