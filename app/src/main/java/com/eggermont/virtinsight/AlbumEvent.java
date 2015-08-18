@@ -11,7 +11,10 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -73,6 +76,9 @@ public class AlbumEvent extends AlbumTrackerActivity {
     // Service references
     GeolocationService mGeoService;
     boolean mBound = false;
+
+    // Geolocation references
+    HashMap<String,Object> currentGeoInfo;
 
     // UI widget references
     private TextView mEditText;
@@ -144,9 +150,10 @@ public class AlbumEvent extends AlbumTrackerActivity {
                 Log.i(DEBUG_TAG, "Image Path:" + getCurrentPhotoPath());
 
                 // Attempt to get geolocation information
-                Log.i(DEBUG_TAG, "Callback from Geolocation Service:" + mGeoService.getRandomNumber());
+                currentGeoInfo = mGeoService.getCurrentLocation();
+                Log.i(DEBUG_TAG, "Callback from Geolocation Service:" + currentGeoInfo.toString());
 
-                long eventId = addNewEvent(getAlbumId(),getCurrentPhotoPath(), getSpeehText());
+                long eventId = addNewEvent(getAlbumId(),getCurrentPhotoPath(), getSpeehText(), currentGeoInfo);
                 Log.i(DEBUG_TAG, "Event ID:" + eventId);
                 resetUI();
             }
@@ -211,7 +218,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
                 return true;
             case R.id.add_event:
                 Log.i(DEBUG_TAG, "Adding a new event");
-                long eventId = addNewEvent(getAlbumId(),getCurrentPhotoPath(), getSpeehText());
+                long eventId = addNewEvent(getAlbumId(),getCurrentPhotoPath(), getSpeehText(), currentGeoInfo);
                 Log.i(DEBUG_TAG, "Event ID:" + eventId);
                 resetUI();
                 return true;
