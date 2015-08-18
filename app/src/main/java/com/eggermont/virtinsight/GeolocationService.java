@@ -52,6 +52,7 @@ public class GeolocationService extends Service implements LocationListener {
     private double currentLogitud;
     private double currentLatitud;
     private double currentAltitud;
+    private List<Address> addresses;
 
     // Status of current geo updates, true if geo info is available,
     // false otherwise
@@ -83,6 +84,7 @@ public class GeolocationService extends Service implements LocationListener {
         String best = location.getBestProvider(criteria, true);
         location.requestLocationUpdates(best, 1000, 0, GeolocationService.this);
 
+
         if(best != null) {
             this.status = true;
             Log.i(DEBUG_TAG, "Best Provider: " + best);
@@ -109,54 +111,25 @@ public class GeolocationService extends Service implements LocationListener {
                 .append(location.getLongitude()).append(") @ (")
                 .append(location.getAltitude()).append(" meters up)\n");
 
-
-        Log.i(DEBUG_TAG, "Current Location:" + locationInfo);
-
-        //lastLocation = location;
-
-        /**
-
-        if (lastLocation != null) {
-            float distance = location.distanceTo(lastLocation);
-            locInfo.append("Distance from last = ").append(distance)
-                    .append(" meters\n");
-
-        }
-        lastLocation = location;
-
         if (Geocoder.isPresent()) {
             Geocoder coder = new Geocoder(this);
             try {
-                List<Address> addresses = coder.getFromLocation(
+                List<Address> addressesSample = coder.getFromLocation(
                         location.getLatitude(), location.getLongitude(), 3);
-                if (addresses != null) {
-                    for (Address namedLoc : addresses) {
-                        String placeName = namedLoc.getLocality();
-                        String featureName = namedLoc.getFeatureName();
-                        String country = namedLoc.getCountryName();
-                        String road = namedLoc.getThoroughfare();
-                        locInfo.append(String.format("[%s][%s][%s][%s]\n",
-                                placeName, featureName, road, country));
-                        int addIdx = namedLoc.getMaxAddressLineIndex();
-                        for (int idx = 0; idx <= addIdx; idx++) {
-                            String addLine = namedLoc.getAddressLine(idx);
-                            locInfo.append(String.format("Line %d: %s\n", idx,
-                                    addLine));
-                        }
-                    }
+
+                if (addresses != null){
+                    addresses = addressesSample;
                 }
+
             } catch (IOException e) {
                 Log.e("GPS", "Failed to get address", e);
             }
         } else {
             Toast.makeText(GeolocationService.this, "No geocoding available",
                     Toast.LENGTH_LONG).show();
-
         }
 
-        Toast.makeText(GeolocationService.this, locInfo,Toast.LENGTH_LONG).show();
-         */
-
+        Log.i(DEBUG_TAG, "Current Location:" + locationInfo);
     }
 
 
@@ -217,6 +190,7 @@ public class GeolocationService extends Service implements LocationListener {
         geoInfo.put("currentLogitud", currentLogitud);
         geoInfo.put("currentLatitud", currentLatitud);
         geoInfo.put("currentAltitud", currentAltitud);
+        geoInfo.put("addresses" , addresses);
 
         return geoInfo;
 
