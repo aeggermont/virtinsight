@@ -72,7 +72,6 @@ public class Album extends AlbumTrackerActivity {
         intent.putExtra("albumName", albumName.getText().toString());
         intent.putExtra("albumDesc", albumDesc.getText().toString());
         intent.putExtra("albumId", albumId);
-
         startActivity(intent);
 
     }
