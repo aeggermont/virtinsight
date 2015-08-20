@@ -1,5 +1,6 @@
 package com.eggermont.virtinsight;
 
+import android.content.Context;
 import android.provider.BaseColumns;
 
 
@@ -10,7 +11,10 @@ import android.provider.BaseColumns;
 
 public final class AlbumTrackerDatabase {
 
-	private AlbumTrackerDatabase() {}
+	private Context mContext;
+	private AlbumTrackerDatabase(Context c) {
+		mContext = mContext;
+	}
 
 
 	// Albums table definitions
