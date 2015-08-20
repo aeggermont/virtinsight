@@ -1,8 +1,5 @@
 package com.eggermont.virtinsight;
 
-/**
- *
- */
 public class Event {
 
     private String mediaPath;
