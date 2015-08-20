@@ -1,30 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Virtual Album Tracker</string>
+    <string name="app_name">Media Album Tracker</string>
     <string name="your_albums">Your Albums</string>
-    <string name="album_name">Album Name</string>
+    <string name="album_name">My Album</string>
     <string name="album_desc">Description</string>
     <string name="date_added">Date Added</string>
     <string name="add_more_albums">Add More Albums</string>
     <string name="album_description">Album Description</string>
     <string name="save">Save</string>
-    <string name="album_new">New Album</string>
+    <string name="album_new">Create New Album</string>
     <string name="show_all_albums">Show All Albums</string>
 
     <string name="album_take_photo">Take Photo</string>
     <string name="album_rec_speech">Record Speech</string>
+    <string name="album_text_save">Save</string>
     <string name="album_add_event">Add Event</string>
+    <string name="album_event_saved">Album event has been saved</string>
+    <string name="album_event_not_saved">Album event has not been saved</string>
 
-    <string name="enter_data_about_your_pet">Album name</string>
-    <string name="pet_species">Pet Species:</string>
-    <string name="show_all_pets">Show All Albums</string>
-    <string name="add_more_pets">Add More Pets</string>
-    <string name="pet_type">Pet Species</string>
-    <string name="pet_actions">Actions</string>
-    <string name="your_pets">Your Pets</string>
-    <string name="pet_name">Album Name:</string>
-    <string name="title_activity_new_album">newAlbum</string>
+    <string name="title_activity_new_album">New Album</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -35,6 +30,8 @@
     <string name="tap_on_mic">Tap on mic to speak</string>
     <string name="title_activity_album_viewer">AlbumViewer</string>
     <string name="title_activity_still_image">StillImage</string>
+
+    <string name="cannot">Cannot</string>
 
 
     <!-- Settings for the camera activity -->
@@ -47,5 +44,26 @@
     <string name="save_to_shared_library">Save to shared library</string>
     <!-- this_example_will_record_a_video_file_called_video_mp4_ -->
     <string name="this_example_will_record_a_video_file_called_video_mp4_">This example will record a video file called video.mp4.</string>
+    <string name="title_activity_test_camera">TestCamera</string>
+    <string name="title_activity_speech_text">SpeechText</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
+    <string name="title_activity_test">Test</string>
+    <string name="browse_title"><![CDATA[Videos by Your Company]]></string>
+    <string name="related_movies">Related Videos</string>
+    <string name="vertical_grid_title"><![CDATA[Vertical Video Grid]]></string>
+    <string name="error">Error</string>
+
+
+    <!-- Error messages -->
+
 
 </resources>
