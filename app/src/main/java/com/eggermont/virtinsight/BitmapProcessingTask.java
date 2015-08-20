@@ -1,14 +1,10 @@
 package com.eggermont.virtinsight;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
-import java.io.File;
 import java.lang.ref.WeakReference;
 
 
@@ -23,6 +19,7 @@ public class BitmapProcessingTask extends AsyncTask<String, Void, Bitmap> {
     private String mCurrentPhotoPath;
     int reqWidth = 0;
     int reqHeight = 0;
+
 
     public BitmapProcessingTask(ImageView imageView) {
         // Use a WeakReference to ensure the ImageView can be garbage collected
@@ -43,14 +40,13 @@ public class BitmapProcessingTask extends AsyncTask<String, Void, Bitmap> {
     // Once complete, see if ImageView is still around and set bitmap.
     @Override
     protected void onPostExecute(Bitmap bitmap) {
-        Log.i(DEBUG_TAG, "DONE Processing image in the background");
-
         if (imageViewReference != null && bitmap != null) {
             final ImageView imageView = imageViewReference.get();
             if (imageView != null) {
                 imageView.setImageBitmap(bitmap);
             }
         }
+        Log.i(DEBUG_TAG, "DONE Processing image in the background");
     }
 
 
@@ -96,14 +92,11 @@ public class BitmapProcessingTask extends AsyncTask<String, Void, Bitmap> {
         final ImageView imageView = imageViewReference.get();
 
 		/* Get the size of the ImageView */
-        // TODO: These settings are not getting inherited from AlbumEvent so hardcoding for now
-        int targetPhotoWidth = 548;
-        int targetPhotoHeight = 548;
+
+        int targetPhotoWidth = imageView.getLayoutParams().width;
+        int targetPhotoHeight = imageView.getLayoutParams().height;
 
         int scaleFactor;
-
-        Log.i(DEBUG_TAG, "Original IamegView width:  " +  targetPhotoWidth);
-        Log.i(DEBUG_TAG, "Original IamegView height:  " + targetPhotoHeight);
 
         // Get the size of the row image
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
@@ -117,13 +110,12 @@ public class BitmapProcessingTask extends AsyncTask<String, Void, Bitmap> {
         Log.i(DEBUG_TAG, "Original Photo height:  " + rawPhotoHeight);
 
         scaleFactor = computeSubsamplingSize(bmOptions, targetPhotoWidth, targetPhotoHeight);
-        Log.i(DEBUG_TAG, "Sacling by factor of: " + scaleFactor );
+        Log.i(DEBUG_TAG, "Scaling by factor of: " + scaleFactor );
 
 		/* Set bitmap options to scale the image decode target */
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;
-
         // Decode photo file into a subsampled image
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         return bitmap;
