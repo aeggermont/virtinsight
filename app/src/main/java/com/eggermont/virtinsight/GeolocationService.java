@@ -10,17 +10,13 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
-import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
-
+import android.os.Looper;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -82,8 +78,9 @@ public class GeolocationService extends Service implements LocationListener {
         criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
 
         String best = location.getBestProvider(criteria, true);
-        location.requestLocationUpdates(best, 1000, 0, GeolocationService.this);
-
+        //location.requestLocationUpdates(best, 1000, 0, GeolocationService.this);
+        location.requestLocationUpdates(best, 120000, 0, GeolocationService.this);
+        //location.requestSingleUpdate(best, GeolocationService.this,  Looper.myLooper());
 
         if(best != null) {
             this.status = true;
@@ -110,24 +107,6 @@ public class GeolocationService extends Service implements LocationListener {
                 .append(location.getLatitude()).append(", ")
                 .append(location.getLongitude()).append(") @ (")
                 .append(location.getAltitude()).append(" meters up)\n");
-
-        if (Geocoder.isPresent()) {
-            Geocoder coder = new Geocoder(this);
-            try {
-                List<Address> addressesSample = coder.getFromLocation(
-                        location.getLatitude(), location.getLongitude(), 3);
-
-                if (addresses != null){
-                    addresses = addressesSample;
-                }
-
-            } catch (IOException e) {
-                Log.e("GPS", "Failed to get address", e);
-            }
-        } else {
-            Toast.makeText(GeolocationService.this, "No geocoding available",
-                    Toast.LENGTH_LONG).show();
-        }
 
         Log.i(DEBUG_TAG, "Current Location:" + locationInfo);
     }
