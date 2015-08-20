@@ -43,7 +43,6 @@ public class AlbumInventoryActivity extends AlbumTrackerActivity {
 		list = (ListView) findViewById(R.id.listview);
 		getAlbumList();
 
-
 		// Pass results to ListViewAdapter Class
 		adapter = new ListViewAdapter(this,
 				albumIds,
@@ -101,17 +100,8 @@ public class AlbumInventoryActivity extends AlbumTrackerActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		//handleAlbumsMenu();
 	}
 
-
-
-	/**
-	 * Gets all the events for a specific album id
-	 */
-	public void getEvventsForAlbum(long albumId) {
-		// TODO needs to be implemented
-	}
 
 	/**
 	 * Get a list of all albums availbale in the database
@@ -119,16 +109,7 @@ public class AlbumInventoryActivity extends AlbumTrackerActivity {
 	public void getAlbumList() {
 
 		HashMap albumInventory = new HashMap<String, HashMap<String, String>>();
-
 		albumInventory = getAlbumListRecords();
-
-
-		Log.i(DEBUG_TAG, "About to render all recorded albums");
-		Log.i(DEBUG_TAG, albumInventory.entrySet().toString());
-
-		//Map<String, String> row = new HashMap<String, String>();
-		// HashMap <String, HashMap<String,String>>
-
 
 		for(Object id : albumInventory.keySet()) {
 			HashMap<String, String> map = (HashMap)albumInventory.get((String)id);
@@ -142,82 +123,3 @@ public class AlbumInventoryActivity extends AlbumTrackerActivity {
 
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		/**
-        // Display the results by adding some TableRows to the existing table layout
-		if(c.moveToFirst())
-		{
-			for(int i = 0; i< c.getCount(); i++)
-			{
-				TableRow newRow = new TableRow(this);
-				TextView nameCol = new TextView(this);
-				TextView typeCol = new TextView(this);
-				TextView dateAdded = new TextView(this);
-				//Button deleteButton = new Button(this);
-				Button viewAlbumButton = new Button(this);
-						
-				newRow.setTag(c.getInt(c.getColumnIndex(VirtAlbums._ID)));		// set the tag field on the TableRow view so we know which row to delete
-				nameCol.setText(c.getString(c.getColumnIndex(VirtAlbums.ALBUM_TITLE_NAME)));
-				typeCol.setText(c.getString(c.getColumnIndex(VirtAlbums.ALBUM_DESCRIPTION)));
-				//dateAdded.setText(c.getString(c.getColumnIndex(VirtAlbums.ALBUM_DATE_ADDED)));
-				viewAlbumButton.setText("View");
-				viewAlbumButton.setTag(c.getColumnIndex(VirtAlbums._ID));
-				//deleteButton.setText("Delete ALbum");
-				//deleteButton.setTag(c.getInt(c.getColumnIndex(VirtAlbums._ID)));		// set the tag field on the button so we know which ID to delete
-
-
-				// Handling
-
-				newRow.addView(nameCol);
-				newRow.addView(typeCol);
-				newRow.addView(dateAdded);
-				//newRow.addView(deleteButton);
-				petTable.addView(newRow);
-				c.moveToNext();
-			}
-		}
-		else
-		{
-			TableRow newRow = new TableRow(this);
-			TextView noResults = new TextView(this);
-			noResults.setText("No results to show.");
-			newRow.addView(noResults);
-			petTable.addView(newRow);
-		}
-
-		 */
-
-
-	/**
-	public void deletePet(Integer id)
-	{
-        SQLiteDatabase db = mDatabase.getWritableDatabase();
-		String astrArgs[] = { id.toString() };
-        db.delete(Pets.PETS_TABLE_NAME, Pets._ID + "=?",astrArgs );
-        db.close();
-		
-		
-	}*/
-
