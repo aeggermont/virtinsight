@@ -1,6 +1,5 @@
 package com.eggermont.virtinsight;
 
-
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -14,7 +13,6 @@ import java.util.TreeMap;
 
 import android.widget.AdapterView;
 import android.view.View;
-import android.app.Activity;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ImageView;
@@ -25,8 +23,6 @@ import android.widget.ImageView;
  *  database keeping track of stored media for the different albums.
  *
  */
-
-
 public class AlbumViewer extends AlbumTrackerActivity {
 
 
@@ -43,6 +39,8 @@ public class AlbumViewer extends AlbumTrackerActivity {
     private TreeMap<Integer, HashMap<String, String>> albumEvents;
     private TextView mDescription;
     private GridView mGridView;
+    private Menu menu;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,19 +115,6 @@ public class AlbumViewer extends AlbumTrackerActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        GridView gridView = (GridView) findViewById(R.id.gridViewPhotos);
-        Log.i(DEBUG_TAG, "Calling on Destroy!");
-
-        int count = gridView.getCount();
-        for (int i = 0; i < count; i++){
-
-            final ImageView v = (ImageView) gridView.getChildAt(i);
-            v.getDrawable().setCallback(null);
         }
     }
 }
