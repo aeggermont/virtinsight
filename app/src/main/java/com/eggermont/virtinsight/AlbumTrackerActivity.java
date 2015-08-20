@@ -7,13 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageView;
-import android.widget.TableLayout;
-
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.TreeMap;
 import java.text.SimpleDateFormat;
 
@@ -47,14 +43,17 @@ public class AlbumTrackerActivity extends Activity {
 	 *
 	 * @return
 	 */
-	public long addNewEvent(long albumId, String currentPhotoPath, String txtSpeechInput ){
+	public long addNewEvent(long albumId, String currentPhotoPath, String txtSpeechInput, HashMap<String,Object> geoInfo ){
 
 		Date today = new Date(System.currentTimeMillis());
 
 		Log.i(DEBUG_TAG, "Saving Event: "
 				+ " Album ID: " +  albumId
 				+ " currentPhotoPath: " + currentPhotoPath
-				+ " description: " + txtSpeechInput);
+				+ " description: " + txtSpeechInput
+				+ " latitud: " + geoInfo.get("currentLatitud")
+				+ " longitud: " +  geoInfo.get("currentLogitud")
+		);
 
 				SQLiteDatabase db = mDatabase.getWritableDatabase();
 		long eventId = 0;
@@ -70,7 +69,7 @@ public class AlbumTrackerActivity extends Activity {
 			albumEventToAdd.put(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_AUDIO_LINK, "/audio_link");
 			albumEventToAdd.put(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_PHOTO_LINK, "\"" + currentPhotoPath + "\"");
 			albumEventToAdd.put(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_AUDIO_SPEECH, txtSpeechInput);
-			albumEventToAdd.put(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_EVENT_GPS, "1.5555, 5.55555");
+			albumEventToAdd.put(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_EVENT_GPS, geoInfo.get("currentLogitud") + "," + geoInfo.get("currentLogitud"));
 
 			eventId = db.insert(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_TABLE_NAME, AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_ALBUM_ID,
 					albumEventToAdd);
@@ -94,6 +93,9 @@ public class AlbumTrackerActivity extends Activity {
 	 * @param albumId unique identifier for a stored album
 	 */
 	public TreeMap<Integer, HashMap<String, String>> getEventsForAlbum(long albumId){
+
+
+		mDatabase = new AlbumTrackerDatabaseHelper(this.getApplicationContext());
 
 		TreeMap albumEvents = new TreeMap<Integer, HashMap<String, String>>();
 		SimpleDateFormat dateformat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
@@ -135,14 +137,6 @@ public class AlbumTrackerActivity extends Activity {
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
-
-				Log.i(DEBUG_TAG, "Album ID " + eventRows.getInt(eventRows.getColumnIndex(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_ALBUM_ID)));
-				Log.i(DEBUG_TAG, "Evemt ID " + eventRows.getInt(eventRows.getColumnIndex(AlbumTrackerDatabase.AlbumEvents._ID)));
-				Log.i(DEBUG_TAG, eventRows.getString(eventRows.getColumnIndex(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_AUDIO_SPEECH)));
-				Log.i(DEBUG_TAG, eventRows.getString(eventRows.getColumnIndex(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_PHOTO_LINK)));
-				Log.i(DEBUG_TAG, eventRows.getString(eventRows.getColumnIndex(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_DATE_ADDED)));
-				Log.i(DEBUG_TAG, "Epoch Time: " + epoch);
-				Log.i(DEBUG_TAG, eventRows.getString(eventRows.getColumnIndex(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_EVENT_GPS)));
 
 				eventRecord.put("album_id", eventRows.getString(eventRows.getColumnIndex(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_ALBUM_ID)));
 				eventRecord.put("date_added",eventRows.getString(eventRows.getColumnIndex(AlbumTrackerDatabase.AlbumEvents.ALBUMEVENTS_DATE_ADDED)));
@@ -205,11 +199,6 @@ public class AlbumTrackerActivity extends Activity {
 				albumInventory.put(Integer.toString(allRows.getInt(
 								allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums._ID))),
 						record);
-
-				//Log.i(DEBUG_TAG, "ID " + allRows.getInt(allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums._ID)));
-				//Log.i(DEBUG_TAG, allRows.getString(allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums.ALBUM_TITLE_NAME)));
-				//Log.i(DEBUG_TAG, allRows.getString(allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums.ALBUM_DATE_ADDED)));
-				//Log.i(DEBUG_TAG, allRows.getString(allRows.getColumnIndex(AlbumTrackerDatabase.VirtAlbums.ALBUM_DESCRIPTION)));
 
 			} while (allRows.moveToNext());
 		}
