@@ -1,0 +1,46 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.eggermont.virtinsight.SpeechText">
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/album_new"
+        android:textColor="#0f0"
+        android:textSize="11pt"
+        android:id="@+id/TextAlbumName"
+        />
+
+    <EditText
+        android:id="@+id/txtSpeechInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
+        android:textStyle="normal"
+        android:layout_below="@+id/TextAlbumName"/>
+
+    <Button
+        android:id="@+id/ButtonRecordSpeech"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/album_rec_speech"
+        android:layout_below="@+id/txtSpeechInput"
+        android:layout_alignParentStart="true">
+    </Button>
+
+    <Button
+        android:id="@+id/ButtonFinishTextInput"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/album_text_save"
+        android:layout_below="@+id/ButtonRecordSpeech"
+        android:layout_alignParentStart="true">
+    </Button>
+
+</RelativeLayout>
