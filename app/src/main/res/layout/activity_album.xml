@@ -25,11 +25,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/pet_name" >
+                android:text="@string/album_name" >
             </TextView>
 
             <EditText
-                android:id="@+id/EditTextName"
+                android:id="@+id/EditTextAlbumName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="textCapWords" >
