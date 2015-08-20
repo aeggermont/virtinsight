@@ -131,6 +131,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
         mTextAlbumName = (TextView) findViewById(R.id.TextAlbumName);
         mCurrentImageView = (ImageView) findViewById(R.id.imageContent);
         mImageBitmap = null;
+        mCurrentPhotoPath = null;
 
         // Start new album or load album if already exists
         setAlbumInfo();
@@ -150,12 +151,19 @@ public class AlbumEvent extends AlbumTrackerActivity {
                 Log.i(DEBUG_TAG, "Image Path:" + getCurrentPhotoPath());
 
                 // Attempt to get geolocation information
-                currentGeoInfo = mGeoService.getCurrentLocation();
-                Log.i(DEBUG_TAG, "Callback from Geolocation Service:" + currentGeoInfo.toString());
 
-                long eventId = addNewEvent(getAlbumId(),getCurrentPhotoPath(), getSpeehText(), currentGeoInfo);
-                Log.i(DEBUG_TAG, "Event ID:" + eventId);
-                resetUI();
+               if ( mCurrentPhotoPath != null){
+                   currentGeoInfo = mGeoService.getCurrentLocation();
+                   long eventId = addNewEvent(getAlbumId(),getCurrentPhotoPath(), getSpeehText(), currentGeoInfo);
+                   Log.i(DEBUG_TAG, "Event ID:" + eventId);
+                   resetUI();
+               }else{
+                   Toast.makeText(getApplicationContext(),
+                           "No photo available to add to the alnum",
+                           Toast.LENGTH_SHORT).show();
+               }
+
+
             }
         });
 
@@ -244,8 +252,7 @@ public class AlbumEvent extends AlbumTrackerActivity {
 
     @Override
     protected void onDestroy(){
-        mCarouselContainer = null;
-        mCurrentImageView = null;
+        super.onDestroy();
     }
 
 
@@ -523,17 +530,10 @@ public class AlbumEvent extends AlbumTrackerActivity {
     }
 
     /**
-     * Indicates whether the specified action can be used as an intent. This
+     * This method verifies whether the specified action can be used as an intent. This
      * method queries the package manager for installed packages that can
      * respond to an intent with the specified action. If no suitable package is
      * found, this method returns false.
-     * http://android-developers.blogspot.com/2009/01/can-i-use-this-intent.html
-     *
-     * @param context The application's environment.
-     * @param action The Intent action to check for availability.
-     *
-     * @return True if an Intent with the specified action can be sent and
-     *         responded to, false otherwise.
      */
     public static boolean isIntentAvailable(Context context, String action) {
         final PackageManager packageManager = context.getPackageManager();
