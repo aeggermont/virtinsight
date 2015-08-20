@@ -8,7 +8,7 @@
     <item android:id="@+id/add_event"
         android:title="Add Event" />
     <item android:id="@+id/view_album"
-        android:title="View Album EVents" />
+        android:title="View Album" />
     <item android:id="@+id/home"
         android:title="Home" />
 </menu>
